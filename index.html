@@ -144,6 +144,9 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  /* Ruang untuk sidebar tetap: dipakai padding, bukan margin, supaya konten
+     tidak melebar melewati lebar layar saat margin auto ikut dihitung. */
+  padding-left: var(--nav-w);
 }
 
 /* Chrome lama disembunyikan; tetap ada di DOM agar handler aplikasi bekerja. */
@@ -159,14 +162,41 @@ body {
   width: var(--nav-w);
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 22px 18px 18px;
+  gap: 14px;
+  padding: 18px 16px 14px;
   background: linear-gradient(180deg, #0b131f 0%, #080d16 100%);
   border-right: 1px solid var(--ui-line);
   z-index: 60;
+  overflow: hidden;
+}
+
+/* Area tengah yang bisa digulir: menu + aksi. */
+.nav-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+
+.nav-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb {
+  background: #22304a;
+  border-radius: 999px;
+}
+
+.nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .nav-brand {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -218,8 +248,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1 1 auto;
-  overflow-y: auto;
+  flex: 0 0 auto;
 }
 
 .nav-item {
@@ -227,7 +256,7 @@ body {
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 11px 12px;
+  padding: 10px 12px;
   border: 1px solid transparent;
   border-radius: 11px;
   background: transparent;
@@ -268,10 +297,11 @@ body {
 }
 
 .nav-foot {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 14px;
+  gap: 8px;
+  padding-top: 12px;
   border-top: 1px solid var(--ui-line-soft);
 }
 
@@ -356,8 +386,8 @@ body {
 .nav-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 14px;
+  gap: 4px;
+  padding-top: 12px;
   border-top: 1px solid var(--ui-line-soft);
 }
 
@@ -367,7 +397,7 @@ body {
   justify-content: flex-start;
   gap: 12px;
   width: 100%;
-  padding: 11px 12px;
+  padding: 10px 12px;
   border-radius: 11px;
   border: 1px solid transparent;
   background: transparent;
@@ -423,7 +453,6 @@ body {
 .wrap {
   max-width: 1180px;
   margin: 0 auto;
-  margin-left: var(--nav-w);
   padding: 34px clamp(18px, 3vw, 40px) 64px;
 }
 
@@ -730,8 +759,11 @@ input::placeholder {
     display: flex;
   }
 
+  body {
+    padding-left: 0;
+  }
+
   .wrap {
-    margin-left: 0;
     padding: 70px 16px 48px;
   }
 
@@ -783,8 +815,11 @@ body.ui-fullscreen .nav-backdrop {
   display: none !important;
 }
 
+body.ui-fullscreen {
+  padding-left: 0;
+}
+
 body.ui-fullscreen .wrap {
-  margin-left: 0;
   max-width: none;
   padding: 0;
 }
@@ -1984,6 +2019,19 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
       newButton.classList.add('btn', 'nav-action', 'is-danger')
       newButton.innerHTML = icon('plus') + '<span>Turnamen Baru</span>'
       actionsWrap.appendChild(newButton)
+    }
+
+    // Bungkus menu + aksi dalam area yang bisa digulir supaya, di jendela
+    // pendek, tombol mode dan status di bawah tetap terlihat.
+    var navList = nav.querySelector('.nav-list')
+    var menuGroup = navList ? navList.parentElement : null
+    var navFoot = nav.querySelector('#navFoot')
+    if (menuGroup) {
+      var scroller = document.createElement('div')
+      scroller.className = 'nav-scroll'
+      scroller.appendChild(menuGroup)
+      scroller.appendChild(actionsWrap)
+      nav.insertBefore(scroller, navFoot)
     }
   }
 
