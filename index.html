@@ -744,7 +744,354 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
   if(a){new MutationObserver(function(){requestAnimationFrame(measure);}).observe(a,{childList:true,subtree:true});}
   requestAnimationFrame(measure);
 })();
-</script></body>
+</script><!-- ===== Sinkronisasi multi-perangkat (Supabase) ===== -->
+<script>
+/* =====================================================================
+ * Lapisan sinkronisasi Supabase untuk Manajer Turnamen Biliar
+ * ---------------------------------------------------------------------
+ * Tempel file ini SEBELUM </body>, sesudah <script> utama aplikasi.
+ *
+ * Cara kerja:
+ *  - Aplikasi tetap menyimpan ke localStorage (cadangan offline).
+ *  - Setiap save() juga mengirim seluruh state ke satu baris tabel
+ *    `bracket_state` di Supabase.
+ *  - Perangkat lain menanyakan baris itu tiap 3 detik; kalau ada versi
+ *    lebih baru, state lokal diganti lalu tampilan digambar ulang.
+ *  - Hanya perangkat ber-"Mode Operator" yang boleh mengirim perubahan.
+ *
+ * Tidak memakai SDK: cukup fetch, jadi tidak ada dependensi eksternal
+ * selain koneksi ke Supabase.
+ * ===================================================================== */
+;(function () {
+  'use strict'
+
+  // ---------------------------------------------------------------- config
+  var CONFIG = {
+    url: "https://gpkbrehzhauiauszfuwm.supabase.co", // contoh: https://abcdefgh.supabase.co
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa2JyZWh6aGF1aWF1c3pmdXdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzODg3MTMsImV4cCI6MjEwOTk2NDcxM30.gLzpkv6qKYDZ2-HvqrVMtfRWkCQCUrYz3MjBbcFxkK8",
+    room: "turnamen-biliar",
+    pin: "1234", // PIN untuk masuk Mode Operator — ganti sebelum turnamen
+    pollMs: 3000,
+    debounceMs: 600,
+  }
+
+  var TABLE = 'bracket_state'
+  var ROLE_KEY = 'biliar-role'
+
+  function configured() {
+    return (
+      typeof CONFIG.url === 'string' &&
+      CONFIG.url.indexOf('GANTI_') === -1 &&
+      CONFIG.url.indexOf('https://') === 0 &&
+      typeof CONFIG.anonKey === 'string' &&
+      CONFIG.anonKey.indexOf('GANTI_') === -1
+    )
+  }
+
+  // Aplikasi asli tetap berfungsi penuh kalau konfigurasi belum diisi.
+  if (typeof window === 'undefined') return
+  if (typeof data === 'undefined' || typeof save !== 'function' || typeof render !== 'function') {
+    console.warn('[sync] aplikasi utama tidak ditemukan; lapisan sinkronisasi dilewati')
+    return
+  }
+
+  // ------------------------------------------------------------------ state
+  var rawSave = save
+  var lastRemoteAt = null // updated_at terakhir yang sudah diterapkan
+  var lastPayload = null // payload terakhir dari server (untuk mengembalikan mode penonton)
+  var pushTimer = null
+  var pollTimer = null
+  var busy = false
+  var pending = false
+  var online = true
+  var role = (function () {
+    try {
+      return localStorage.getItem(ROLE_KEY) === 'operator' ? 'operator' : 'viewer'
+    } catch (e) {
+      return 'viewer'
+    }
+  })()
+
+  // ------------------------------------------------------------------- util
+  function headers() {
+    return {
+      apikey: CONFIG.anonKey,
+      Authorization: 'Bearer ' + CONFIG.anonKey,
+      'Content-Type': 'application/json',
+    }
+  }
+
+  function endpoint(query) {
+    return CONFIG.url.replace(/\/$/, '') + '/rest/v1/' + TABLE + (query || '')
+  }
+
+  /**
+   * Sebuah baris yang baru dibuat berisi `{}`. Itu bukan data turnamen, jadi
+   * tidak boleh dipakai menimpa data lokal yang sudah tersusun.
+   */
+  function isEmptyPayload(payload) {
+    return !payload || typeof payload !== 'object' || Object.keys(payload).length === 0
+  }
+
+  function stamp(iso) {    if (!iso) return '—'
+    try {
+      return new Date(iso).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    } catch (e) {
+      return String(iso)
+    }
+  }
+
+  // -------------------------------------------------------------------- UI
+  var chip = null
+  var statusEl = null
+
+  function mountUi() {
+    var style = document.createElement('style')
+    style.textContent = [
+      '#syncChip{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:8px;align-items:center;',
+      'font:600 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:9px 13px;border-radius:999px;',
+      'border:1px solid rgba(0,0,0,.15);background:#fff;color:#111;box-shadow:0 6px 20px rgba(0,0,0,.18);cursor:pointer}',
+      '#syncChip.op{background:#0f766e;color:#fff;border-color:#0f766e}',
+      '#syncStatus{position:fixed;left:14px;bottom:14px;z-index:9999;font:500 11px/1.4 system-ui,sans-serif;',
+      'padding:6px 10px;border-radius:8px;background:rgba(17,17,17,.78);color:#fff;max-width:60vw}',
+      '#syncStatus.bad{background:#b91c1c}',
+      '@media(max-width:520px){#syncChip{right:10px;bottom:10px;padding:8px 11px}#syncStatus{left:10px;bottom:10px}}',
+    ].join('')
+    document.head.appendChild(style)
+
+    chip = document.createElement('button')
+    chip.id = 'syncChip'
+    chip.type = 'button'
+    chip.addEventListener('click', toggleRole)
+    document.body.appendChild(chip)
+
+    statusEl = document.createElement('div')
+    statusEl.id = 'syncStatus'
+    document.body.appendChild(statusEl)
+    paint()
+  }
+
+  function paint(extra) {
+    if (chip) {
+      chip.className = role === 'operator' ? 'op' : ''
+      chip.textContent = role === 'operator' ? '✏️ Operator' : '👁 Penonton'
+      chip.title =
+        role === 'operator'
+          ? 'Perangkat ini boleh mengubah bracket. Klik untuk keluar dari mode operator.'
+          : 'Perangkat ini hanya melihat. Klik untuk masuk mode operator (perlu PIN).'
+    }
+    if (statusEl) {
+      var parts = []
+      if (!configured()) {
+        parts.push('Sinkronisasi belum diatur — data hanya di perangkat ini.')
+      } else if (!online) {
+        parts.push('Offline — memakai data lokal.')
+      } else if (!lastRemoteAt) {
+        parts.push('Menunggu data dari operator…')
+      } else {
+        parts.push('Tersambung • diperbarui ' + stamp(lastRemoteAt))
+      }
+      if (extra) parts.push(extra)
+      statusEl.textContent = parts.join(' ')
+      statusEl.className = configured() && online ? '' : 'bad'
+    }
+  }
+
+  function toast(message, bad) {
+    if (!statusEl) return
+    statusEl.textContent = message
+    statusEl.className = bad ? 'bad' : ''
+    clearTimeout(toast._t)
+    toast._t = setTimeout(function () {
+      paint()
+    }, 2600)
+  }
+
+  function toggleRole() {
+    if (role === 'operator') {
+      role = 'viewer'
+      try {
+        localStorage.setItem(ROLE_KEY, role)
+      } catch (e) {}
+      paint()
+      toast('Mode penonton: perubahan tidak akan tersimpan.')
+      return
+    }
+    var entered = window.prompt('Masukkan PIN operator:')
+    if (entered === null) return
+    if (String(entered) !== String(CONFIG.pin)) {
+      toast('PIN salah.', true)
+      return
+    }
+    role = 'operator'
+    try {
+      localStorage.setItem(ROLE_KEY, role)
+    } catch (e) {}
+    paint()
+    toast('Mode operator aktif di perangkat ini.')
+    // Operator langsung mengunggah state lokal supaya perangkat lain terisi.
+    if (configured() && !lastRemoteAt) push()
+  }
+
+  // ----------------------------------------------------------- remote calls
+  function pull() {
+    return fetch(endpoint('?id=eq.' + encodeURIComponent(CONFIG.room) + '&select=payload,updated_at'), {
+      headers: headers(),
+      cache: 'no-store',
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status)
+        return response.json()
+      })
+      .then(function (rows) {
+        online = true
+        return Array.isArray(rows) && rows.length > 0 ? rows[0] : null
+      })
+      .catch(function (error) {
+        online = false
+        paint()
+        throw error
+      })
+  }
+
+  function push() {
+    if (!configured() || role !== 'operator') return Promise.resolve()
+    if (busy) {
+      // Kiriman sebelumnya belum selesai; pastikan state terbaru ikut terkirim.
+      pending = true
+      return Promise.resolve()
+    }
+    busy = true
+    var body = JSON.stringify([{ id: CONFIG.room, payload: data }])
+    return fetch(endpoint(), {
+      method: 'POST',
+      headers: Object.assign({}, headers(), {
+        Prefer: 'resolution=merge-duplicates,return=representation',
+      }),
+      body: body,
+      cache: 'no-store',
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status)
+        return response.json()
+      })
+      .then(function (rows) {
+        online = true
+        var row = Array.isArray(rows) && rows.length > 0 ? rows[0] : null
+        if (row && row.updated_at) lastRemoteAt = row.updated_at
+        lastPayload = JSON.parse(JSON.stringify(data))
+        paint()
+      })
+      .catch(function (error) {
+        online = false
+        paint('Gagal mengirim: ' + (error && error.message ? error.message : 'tidak diketahui'))
+      })
+      .then(function () {
+        busy = false
+        if (pending) {
+          pending = false
+          schedulePush()
+        }
+      })
+  }
+
+  function schedulePush() {
+    clearTimeout(pushTimer)
+    pushTimer = setTimeout(function () {
+      push().catch(function () {})
+    }, CONFIG.debounceMs)
+  }
+
+  // --------------------------------------------------------- apply & reload
+  function applyRemote(row) {
+    if (!row || !row.payload) return
+    if (isEmptyPayload(row.payload)) return
+    if (lastRemoteAt && row.updated_at && row.updated_at <= lastRemoteAt) return
+    lastRemoteAt = row.updated_at || new Date().toISOString()
+    lastPayload = row.payload
+    try {
+      data = Object.assign(initial(), row.payload)
+      rawSave() // simpan ke cache lokal tanpa memicu push
+      render()
+    } catch (error) {
+      console.warn('[sync] gagal menerapkan data dari server', error)
+    }
+    paint()
+  }
+
+  function poll() {
+    if (!configured() || document.hidden) return
+    pull()
+      .then(function (row) {
+        if (!row || isEmptyPayload(row.payload)) {
+          paint('Belum ada data. Aktifkan Mode Operator lalu ubah skor sekali.')
+          return
+        }
+        applyRemote(row)
+      })
+      .catch(function () {
+        /* status sudah diperbarui di pull() */
+      })
+  }
+
+  // ------------------------------------------------------------- patch save
+  window.save = function () {
+    if (role !== 'operator') {
+      // Kembalikan tampilan ke versi server supaya tidak tampak seolah tersimpan.
+      if (lastPayload) {
+        try {
+          data = Object.assign(initial(), lastPayload)
+          render()
+        } catch (error) {}
+      }
+      toast('Mode penonton — perubahan tidak disimpan. Klik tombol Penonton untuk jadi operator.', true)
+      return false
+    }
+    var ok = rawSave()
+    if (ok && configured()) schedulePush()
+    return ok
+  }
+
+  // ---------------------------------------------------------------- startup
+  mountUi()
+
+  window.addEventListener('online', function () {
+    online = true
+    paint()
+    poll()
+  })
+  window.addEventListener('offline', function () {
+    online = false
+    paint()
+  })
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) poll()
+  })
+
+  if (!configured()) {
+    paint()
+    return
+  }
+
+  // Tarik data terbaru lebih dulu; kalau server masih kosong dan perangkat ini
+  // operator, unggah state lokal.
+  pull()
+    .then(function (row) {
+      if (row && !isEmptyPayload(row.payload)) applyRemote(row)
+      else if (role === 'operator') push()
+      else paint('Belum ada data. Aktifkan Mode Operator di perangkat pengatur.')
+    })
+    .catch(function () {
+      paint('Tidak bisa menghubungi Supabase — memakai data lokal.')
+    })
+
+  pollTimer = setInterval(poll, CONFIG.pollMs)
+  window.addEventListener('beforeunload', function () {
+    clearInterval(pollTimer)
+  })
+})()
+</script>
+</body>
 </html>
 
 <style>.flowCol::before,.flowCol::after,.flowCol .match::before{display:none!important}</style>
