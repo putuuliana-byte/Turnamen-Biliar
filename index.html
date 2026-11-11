@@ -703,6 +703,15 @@ input::placeholder {
   color: #5d7091;
 }
 
+/* Alasan tombol generate masih mati. */
+.generate-hint {
+  margin-top: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fca5a5;
+  text-align: right;
+}
+
 /* ------------------------------------------------------------------ mobile */.nav-toggle {
   display: none;
   position: fixed;
@@ -1171,7 +1180,7 @@ function render(){document.querySelectorAll('.tab').forEach(b=>b.classList.toggl
 function playersView(){return `<section class="card"><h2>Database Tier Pemain</h2><p class="muted">Simpan semua pemain di sini. Peserta turnamen dipilih kemudian melalui dropdown.</p><div class="grid">${[1,2,3,4,5,6].map(t=>{const ps=data.players.filter(p=>p.tier===t);return `<div class="tier"><div class="row between"><b style="color:var(--green)">Tier ${t}</b><span class="badge">${ps.length}</span></div><div class="row" style="margin-top:10px"><input class="input tierName" data-tier="${t}" placeholder="Nama pemain"><button class="btn primary add" data-tier="${t}">+</button></div>${ps.map(p=>`<div class="player"><span>${esc(p.name)}</span><button class="btn secondary del" data-id="${p.id}">Hapus</button></div>`).join('')}</div>`}).join('')}</div><div class="actions"><div><b>Simpan dan hubungkan daftar pemain</b><div class="muted">Menyimpan database dan membuka pengaturan bagan.</div></div><button class="btn primary" id="saveRoster" ${data.players.length<2||data.matches.length?'disabled':''}>Simpan & Segarkan Bagan</button></div></section>`}
 function rulesView(){return `<section class="card"><h2>Aturan Handicap</h2>${[0,1,2,3,4,5].map(g=>`<div class="player"><b>Selisih ${g} tier</b><span>${g===0?'Aturan bola 8 normal.':`Tier lebih rendah boleh memasukkan bola 8 saat tersisa ${g} bola kelompoknya.`}</span></div>`).join('')}</section>`}
 function participantOptions(current){const selected=participantNames();return `<option value="">Pilih pemain</option>`+data.players.map(p=>`<option value="${esc(p.name)}" ${(selected.includes(p.name)&&p.name!==current)?'disabled':''} ${p.name===current?'selected':''}>${esc(p.name)} (Tier ${p.tier})</option>`).join('')}
-function setupView(){const rows=data.participants||['',''];const valid=rows.filter(Boolean),unique=new Set(valid).size===valid.length;return `<section class="card"><h2>Peserta & Jenis Bagan</h2><p class="muted">Tambahkan slot peserta, pilih nama dari database tier, kemudian generate. Posisi pemain akan diacak otomatis.</p><div class="form3" style="grid-template-columns:minmax(180px,1fr) minmax(150px,220px) auto"><label>Jenis bagan<select id="format" class="select"><option value="single" ${data.format==='single'?'selected':''}>Single Elimination</option><option value="double" ${data.format==='double'?'selected':''}>Double Elimination</option></select></label><label>Mode pertandingan<input id="raceTo" class="input" type="number" min="1" max="15" step="1" value="${raceTarget()}"><span class="muted" style="display:block;margin-top:5px;font-size:12px">Default Race to 3</span></label><button id="addParticipant" class="btn secondary">+ Tambah Peserta</button></div><div class="participantTable">${rows.map((name,i)=>`<div class="participantRow"><span class="participantNo">${i+1}</span><select class="select participantSelect" data-index="${i}">${participantOptions(name)}</select><button class="btn secondary removeParticipant" data-index="${i}" ${rows.length<=2?'disabled':''}>Hapus</button></div>`).join('')}</div><div class="actions"><div><b>${valid.length} peserta dipilih</b><div class="muted">Minimal 2 pemain, tidak boleh ada nama ganda.</div></div><button id="generateRandom" class="btn primary" ${valid.length<2||!unique||valid.length!==rows.length?'disabled':''}>Acak & Generate Bagan</button></div></section>`}
+function setupView(){const rows=data.participants||['',''];const valid=rows.filter(Boolean),unique=new Set(valid).size===valid.length;return `<section class="card"><h2>Peserta & Jenis Bagan</h2><p class="muted">Tambahkan slot peserta, pilih nama dari database tier, kemudian generate. Posisi pemain akan diacak otomatis.</p><div class="form3" style="grid-template-columns:minmax(180px,1fr) minmax(150px,220px) auto"><label>Jenis bagan<select id="format" class="select"><option value="single" ${data.format==='single'?'selected':''}>Single Elimination</option><option value="double" ${data.format==='double'?'selected':''}>Double Elimination</option></select></label><label>Mode pertandingan<input id="raceTo" class="input" type="number" min="1" max="15" step="1" value="${raceTarget()}"><span class="muted" style="display:block;margin-top:5px;font-size:12px">Default Race to 3</span></label><button id="addParticipant" class="btn secondary">+ Tambah Peserta</button></div><div class="participantTable">${rows.map((name,i)=>`<div class="participantRow"><span class="participantNo">${i+1}</span><select class="select participantSelect" data-index="${i}">${participantOptions(name)}</select><button class="btn secondary removeParticipant" data-index="${i}" ${rows.length<=2?'disabled':''}>Hapus</button></div>`).join('')}</div><div class="actions"><div><b>${valid.length} peserta dipilih</b><div class="muted">Minimal 2 pemain, tidak boleh ada nama ganda. Slot yang kosong diabaikan.</div></div><button id="generateRandom" class="btn primary" ${valid.length<2||!unique?'disabled':''}>Acak & Generate Bagan</button></div></section>`}
 function bracketView(){if(!data.matches.length)return setupView();
 const seeds=seeded(),editable=!data.started;const grouped={};data.matches.forEach(m=>{if(!data.started&&m.round>1)return;if(data.started&&m.round>1&&!m.player1&&!m.player2)return;(grouped[m.round]??=[]).push(m)});return `<div class="toolbar"><button id="backGenerate" class="btn secondary">${data.started?'Batalkan Turnamen & Generate Ulang':'Kembali ke Pengaturan Bagan'}</button></div>${!data.started?`<div class="notice"><b>Isi ${data.participantCount} peserta.</b> Nama terisi ${seeds.length}/${data.participantCount}. Setiap nama hanya boleh dipakai sekali.<br><button id="start" class="btn primary" style="margin-top:10px" ${seeds.length!==data.participantCount||new Set(seeds).size!==seeds.length?'disabled':''}>Kunci Peserta & Mulai</button></div>`:''}${data.champion?`<div class="winner"><div>JUARA</div><h2>${esc(data.champion)}</h2></div>`:''}<section class="card"><h2>${data.format==='double'?'Double Elimination':'Single Elimination'}</h2>${data.format==='double'?'':`<p class="muted">Putaran berikutnya muncul otomatis ketika peserta sudah ditentukan.</p>`}${data.format==='double'?doubleOverview():`<div class="bracket">${Object.entries(grouped).sort((a,b)=>a[0]-b[0]).map(([r,ms])=>`<div class="round flowCol"><h3 style="color:var(--green)">${ms[0].label}</h3>${ms.map(m=>matchCard(m,editable&&m.round===1,seeds)).join('')}</div>`).join('')}</div>`}</section>`}
 function options(current,seeds){return `<option value="">Pilih pemain</option>`+data.players.map(p=>`<option value="${esc(p.name)}" ${(seeds.includes(p.name)&&p.name!==current)?'disabled':''} ${p.name===current?'selected':''}>${esc(p.name)} (Tier ${p.tier})</option>`).join('')}
@@ -1957,6 +1966,39 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
     if (d.champion) parts.push('Juara: ' + d.champion)
     if (pageMeta) pageMeta.textContent = parts.join(' · ')
     if (navSub) navSub.textContent = name || 'Biliar'
+    annotateGenerate()
+  }
+
+  /**
+   * Jelaskan kenapa tombol "Acak & Generate Bagan" masih mati, supaya tidak
+   * terlihat seperti aplikasi yang rusak.
+   */
+  function annotateGenerate() {
+    var button = document.getElementById('generateRandom')
+    var existing = document.getElementById('generateHint')
+
+    if (!button || !button.disabled) {
+      if (existing) existing.remove()
+      return
+    }
+
+    var d = state()
+    var rows = Array.isArray(d.participants) ? d.participants : []
+    var valid = rows.filter(Boolean)
+    var unique = new Set(valid).size === valid.length
+    var reason =
+      valid.length < 2
+        ? 'Pilih minimal 2 peserta untuk membuat bagan.'
+        : 'Ada nama yang sama di dua slot — hapus salah satunya.'
+
+    if (!existing) {
+      existing = document.createElement('div')
+      existing.id = 'generateHint'
+      existing.className = 'generate-hint'
+      button.insertAdjacentElement('afterend', existing)
+    }
+    existing.textContent = reason
+    button.title = reason
   }
 
   // Klik sidebar diteruskan ke tombol tab asli.
