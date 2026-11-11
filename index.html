@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manajer Turnamen Biliar</title>
+  <style>:root{--bg:#020617;--panel:#0f172a;--panel2:#020617;--line:#334155;--text:#e2e8f0;--muted:#94a3b8;--green:#34d399;--amber:#fbbf24;--red:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1400px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:22px;flex-wrap:wrap}h1{margin:4px 0;font-size:clamp(28px,5vw,48px)}.eyebrow{color:var(--green);font-weight:800;letter-spacing:.16em;font-size:12px}.muted{color:var(--muted)}button,input,select{font:inherit}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.btn:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--green);color:#022c22}.danger{background:var(--red);color:white}.secondary{background:#1e293b;color:var(--text);border:1px solid var(--line)}.tabs{display:flex;gap:8px;background:var(--panel);padding:8px;border:1px solid #1e293b;border-radius:16px;margin-bottom:22px;flex-wrap:wrap}.tab.active{background:var(--green);color:#022c22}.card{background:var(--panel);border:1px solid #1e293b;border-radius:18px;padding:20px;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tier{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:14px}.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.input,.select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px}.player{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border-radius:10px;padding:9px 10px;margin-top:7px}.badge{display:inline-block;background:#1e293b;border-radius:999px;padding:4px 9px;font-size:12px}.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;padding:16px;background:var(--panel2);border-radius:14px;flex-wrap:wrap}.form3{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}.bracket{display:flex;gap:34px;overflow-x:auto;padding:8px 18px 15px 4px}.flowCol{position:relative}.flowCol:not(:last-child)::after{content:'';position:absolute;right:-34px;top:50%;width:34px;border-top:2px solid #475569}.flowCol:not(:last-child)::before{content:'';position:absolute;right:-34px;top:22%;height:56%;border-right:2px solid #475569}.match{position:relative}.flowCol:not(:first-child) .match::before{content:'';position:absolute;left:-18px;top:50%;width:18px;border-top:2px solid #475569}.source{font-size:10px;color:#93c5fd;line-height:1.25}.waiting{font-size:11px;color:#cbd5e1}.finishPlaceholder{width:100%;margin-top:7px;background:#172033;color:#64748b;border:1px solid #334155}.round{width:235px;flex:0 0 235px}.match{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:8px}.slot{display:flex;gap:5px;align-items:center;background:var(--panel);border-radius:7px;padding:5px;margin:4px 0}.slot select{min-width:0}.score{width:46px;padding:7px}.round h3{font-size:14px;margin:8px 0}.match .muted{font-size:11px}.bracketSection{margin-bottom:18px}.sectionTitle{display:flex;align-items:center;gap:10px;font-size:16px;margin:4px 0 10px}.ghost{opacity:.55;border-style:dashed}.grand{border-color:rgba(251,191,36,.55)}.notice{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);padding:14px;border-radius:14px;color:#fde68a;margin-bottom:16px}.winner{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);padding:22px;border-radius:16px;text-align:center;margin-bottom:16px}.handicap{font-size:12px;color:#fde68a;background:rgba(251,191,36,.1);border-radius:10px;padding:9px;margin:10px 0}.participantTable{display:grid;gap:7px;margin-top:12px}.participantRow{display:grid;grid-template-columns:38px minmax(220px,1fr) auto;gap:8px;align-items:center;background:var(--panel2);padding:7px;border:1px solid var(--line);border-radius:9px}.participantNo{text-align:center;color:var(--muted);font-weight:800}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}.hidden{display:none}.saved{position:fixed;right:18px;top:18px;background:var(--green);color:#022c22;padding:9px 14px;border-radius:999px;font-weight:800;display:none;z-index:20}.doubleCanvas{position:relative;min-width:max-content;padding:8px 18px 20px 8px}.doubleArea{position:relative;z-index:2;display:grid;grid-template-columns:repeat(var(--cols),235px) 235px;grid-template-rows:auto auto;column-gap:54px;row-gap:34px;align-items:center}.bracketLane{display:contents}.laneLabel{grid-column:1/-1;font-size:15px;font-weight:900;margin:3px 0;color:var(--green)}.laneLabel.lower{color:#60a5fa}.flowColumn{width:235px;align-self:stretch;display:flex;flex-direction:column;justify-content:space-around;gap:10px;position:relative}.flowColumn h3{font-size:13px;margin:0 0 6px}.nodeCard{position:relative}.grandColumn{grid-column:var(--gf-col);grid-row:1/3;align-self:center}.connectorSvg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}.connectorPath{fill:none;stroke:#64748b;stroke-width:2}.connectorDot{fill:#94a3b8}.nodeCode{color:#93c5fd;font-size:10px;font-weight:800}.sourceText{font-size:10px;color:#93c5fd}.miniSlot{min-height:34px}.grandCard{border-color:rgba(251,191,36,.7);box-shadow:0 0 0 1px rgba(251,191,36,.15)}@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.form3{grid-template-columns:1fr}}@media(max-width:620px){.grid{grid-template-columns:1fr}.wrap{padding:14px}}.match .handicap{font-size:9px;line-height:1.25;padding:5px 7px;margin:6px 0;border-radius:6px;}.match .finish{display:block;width:auto;min-width:0;margin-top:6px;padding:6px 9px;border-radius:7px;font-size:10px;line-height:1.15;white-space:nowrap;}.match .finishPlaceholder{display:block;width:auto;min-width:0;margin-top:6px;padding:6px 9px;border-radius:7px;font-size:9px;line-height:1.15;white-space:nowrap;}.match>.row.between.muted{font-size:9px;line-height:1.1;margin-bottom:3px;}.match .nodeCode{font-size:9px;}.match .sourceText{font-size:8px;line-height:1.15;}.match .waiting{font-size:9px;line-height:1.15;}.match .slot{padding:4px 5px;margin:3px 0;}.match .slot b{font-size:12px;}.match .slot .muted{font-size:9px;}.match .score{width:42px;padding:5px;font-size:12px;}.match>div[style*="color:var(--green)"]{font-size:11px;margin-top:5px;}.tabs{position:relative!important;z-index:1000!important;pointer-events:auto!important}.tab{position:relative!important;z-index:1001!important;pointer-events:auto!important}.match:has(>div[style*="color:var(--green)"]) .slot{margin-bottom:4px}.match .byeNote{font-size:9px;color:var(--green)}.match .handicap{width:fit-content!important;max-width:100%!important;margin:5px auto 4px 0!important;text-align:left!important}.match .finish,.match .finishPlaceholder{display:block!important;width:fit-content!important;min-width:52px!important;margin:5px auto 0 0!important;padding:5px 10px!important;text-align:center!important;white-space:nowrap!important}.match>div[style*="color:var(--green)"]{width:fit-content!important;max-width:100%!important;margin:5px auto 0 0!important;text-align:left!important}.playerIdentity{display:flex;align-items:center;gap:6px;min-width:0;flex:1}.playerText{min-width:0;flex:1;line-height:1.1}.playerText b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.inlineHandicap{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:27px;height:25px;padding:0 5px;border-radius:6px;background:#78350f;color:#fde68a;border:1px solid #a16207;font-size:9px;font-weight:900;line-height:1}.match:has(.finish){position:relative!important;padding-left:66px!important}.match:has(.finish) .finish{position:absolute!important;left:7px!important;top:50%!important;transform:translateY(-50%)!important;margin:0!important;min-width:50px!important;width:50px!important;padding:6px 4px!important;font-size:9px!important;line-height:1!important;z-index:3!important;}.match:has(.finish)>.row.between.muted{margin-left:-59px!important}.match:has(.finish) .slot{width:100%!important}.playerIdentity{display:flex!important;align-items:center!important;gap:5px!important;min-width:0!important;flex:1!important}.playerText{order:1!important;min-width:0!important;flex:0 1 auto!important;line-height:1.1!important}.inlineHandicap{order:2!important;display:inline!important;flex:0 0 auto!important;min-width:0!important;height:auto!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#fde68a!important;font-size:9px!important;font-weight:800!important;line-height:1!important;white-space:nowrap!important}.inlineHandicap{color:#fde68a!important;font-size:9px!important;font-weight:900!important;white-space:nowrap!important}.nodeCard{transition:none!important}.flowColumn{overflow:visible!important}.doubleCanvas{position:relative!important}.connectorSvg{position:absolute!important;left:0!important;top:0!important;pointer-events:none!important;overflow:visible!important}.connectorPath{stroke-linecap:round!important;stroke-linejoin:round!important}.nodeCard{transition:none!important}.match .finishPlaceholder{display:none!important}.doubleCanvas{--dynamic-density:1}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .match{padding:calc(9px * var(--dynamic-density))!important;margin-bottom:calc(8px * var(--dynamic-density))!important;border-radius:8px!important;}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .slot{min-height:28px!important;padding:3px 5px!important;margin:2px 0!important;}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .slot b{font-size:11px!important}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .slot .muted{font-size:8px!important}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .score{width:38px!important;height:29px!important;padding:3px!important;font-size:11px!important}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) .finish{width:44px!important;min-width:44px!important;padding:5px 3px!important;font-size:8px!important}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]) h3{font-size:11px!important;margin-bottom:3px!important}.doubleCanvas.laterRoundsFocus .flowColumn:not([style*="grid-column:1;"]){gap:6px!important}.doubleCanvas.laterRoundsFocus .grandColumn .match{padding:7px!important}.bracketScroller{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-gutter:stable;scrollbar-color:#475569 #0f172a;scrollbar-width:thin;padding:0 0 12px;}.bracketScroller::-webkit-scrollbar{height:12px}.bracketScroller::-webkit-scrollbar-track{background:#0f172a;border-radius:999px}.bracketScroller::-webkit-scrollbar-thumb{background:#475569;border-radius:999px;border:2px solid #0f172a}.bracketScroller::-webkit-scrollbar-thumb:hover{background:#64748b}.doubleCanvas{width:max-content;min-width:100%;transition:none!important}.bracketScroller.isCompact .doubleArea{row-gap:18px!important}.bracketScroller.isCompact .flowColumn{gap:5px!important}.bracketScroller.isCompact .match{padding:6px!important;margin-bottom:5px!important;border-radius:8px!important;}.bracketScroller.isCompact .slot{min-height:25px!important;padding:2px 4px!important;margin:2px 0!important;}.bracketScroller.isCompact .slot b{font-size:10px!important}.bracketScroller.isCompact .slot .muted{font-size:8px!important}.bracketScroller.isCompact .score{width:35px!important;height:26px!important;padding:2px!important;font-size:10px!important}.bracketScroller.isCompact .finish{width:40px!important;min-width:40px!important;padding:4px 2px!important;font-size:8px!important}.bracketScroller.isCompact .row.between.muted,.bracketScroller.isCompact .nodeCode{font-size:8px!important}.bracketScroller.isCompact .flowColumn h3{font-size:10px!important;margin:0 0 2px!important}.bracketScroller.isCompact .inlineHandicap{font-size:8px!important}.bracketScroller.isCompact .playerText{line-height:1!important}.bracketScroller.isCompact .match>div[style*="color:var(--green)"]{font-size:9px!important;margin-top:3px!important}.bracketScroller.isCompact .doubleArea{align-items:start!important;grid-template-rows:auto auto!important;row-gap:12px!important;}.bracketScroller.isCompact .flowColumn{align-self:start!important;justify-content:flex-start!important;height:auto!important;min-height:0!important;gap:4px!important;padding-top:0!important;padding-bottom:0!important;}.bracketScroller.isCompact .flowColumn:not([style*="grid-column:1;"]) .nodeCard{margin-top:0!important;margin-bottom:4px!important;}.bracketScroller.isCompact .match{min-height:0!important;padding:5px!important;margin:0 0 4px!important;}.bracketScroller.isCompact .slot{min-height:23px!important;height:auto!important;padding:2px 4px!important;margin:1px 0!important;}.bracketScroller.isCompact .flowColumn h3{margin:0 0 3px!important;padding:0!important;line-height:1!important;}.bracketScroller.isCompact .grandColumn{align-self:start!important;justify-self:start!important;padding-top:0!important;}.bracketScroller.isCompact .doubleCanvas{padding-top:4px!important;padding-bottom:6px!important;}.bracketScroller.isCompact .score{height:24px!important;width:34px!important}.bracketScroller.isCompact .finish{height:24px!important;min-height:24px!important}.match:has(.finish){position:relative!important;padding:6px 6px 6px 64px!important;}.match:has(.finish)>.row.between.muted{margin-left:-58px!important;padding-left:0!important;}.match:has(.finish) .finish{position:absolute!important;left:7px!important;top:50%!important;transform:translateY(-50%)!important;width:48px!important;min-width:48px!important;height:27px!important;min-height:27px!important;margin:0!important;padding:4px 3px!important;font-size:8px!important;line-height:1!important;z-index:4!important;}.match:has(.finish) .slot{width:100%!important;margin-left:0!important;}.match:has(.finish) .playerIdentity{min-width:0!important;overflow:hidden!important;}.bracketScroller.isCompact .match:has(.finish){padding:5px 5px 5px 60px!important;}.bracketScroller.isCompact .match:has(.finish)>.row.between.muted{margin-left:-54px!important;}.bracketScroller.isCompact .match:has(.finish) .finish{left:6px!important;width:44px!important;min-width:44px!important;height:24px!important;min-height:24px!important;}.match.hasFinish{position:relative!important;display:grid!important;grid-template-columns:52px minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;column-gap:6px!important;padding:6px!important;}.match.hasFinish>.row.between.muted{grid-column:1 / -1!important;grid-row:1!important;margin:0 0 4px!important;padding:0!important;}.match.hasFinish>.slot{grid-column:2!important;width:100%!important;min-width:0!important;margin-left:0!important;}.match.hasFinish>.slot:nth-of-type(2){grid-row:2!important}.match.hasFinish>.slot:nth-of-type(3){grid-row:3!important}.match.hasFinish>.finish{position:static!important;transform:none!important;grid-column:1!important;grid-row:2 / 4!important;align-self:center!important;justify-self:stretch!important;width:52px!important;min-width:52px!important;height:28px!important;min-height:28px!important;margin:0!important;padding:4px 3px!important;font-size:8px!important;line-height:1!important;z-index:auto!important;}.match.hasFinish .playerIdentity{min-width:0!important;overflow:hidden!important}.match.hasFinish .playerText{min-width:0!important}.bracketScroller.isCompact .match.hasFinish{grid-template-columns:46px minmax(0,1fr)!important;column-gap:5px!important;padding:5px!important;}.bracketScroller.isCompact .match.hasFinish>.finish{width:46px!important;min-width:46px!important;height:24px!important;min-height:24px!important;}.bracketScroller.isCompact .flowColumn[style*="grid-column:1;grid-row:1"]{display:none!important;}.bracketScroller.isCompact .doubleArea{grid-template-rows:max-content max-content!important;align-content:start!important;row-gap:6px!important;}.bracketScroller.isCompact .flowColumn[style*="grid-row:1"],.bracketScroller.isCompact .flowColumn[style*="grid-row:2"]{align-self:start!important;justify-content:flex-start!important;height:max-content!important;min-height:0!important;}.bracketScroller.isCompact .flowColumn[style*="grid-row:1"] .nodeCard,.bracketScroller.isCompact .flowColumn[style*="grid-row:2"] .nodeCard{margin-top:0!important;margin-bottom:3px!important;}.bracketScroller.isCompact .grandColumn{grid-row:1 / 3!important;align-self:start!important;margin-top:0!important;}.bracketScroller.isCompact .flowColumn:not([style*="grid-column:1;"]) .nodeCard{margin-top:0!important;margin-bottom:4px!important;}.bracketScroller.isCompact .nodeCard{transition:none!important}.doubleCanvas .nodeCard{transform:translateY(var(--align-y,0px))!important;transition:none!important;}.bracketScroller.isCompact .nodeCard{transform:translateY(var(--align-y,0px))!important;}.bracketScroller .doubleCanvas .doubleArea .flowColumn .nodeCard,.bracketScroller.isCompact .doubleCanvas .doubleArea .flowColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;transition:none!important;}.bracketScroller.isCompact .flowColumn[style*="grid-column:2;"]{align-self:start!important;justify-content:flex-start!important;height:max-content!important;min-height:0!important;gap:4px!important;padding-top:0!important;}.bracketScroller.isCompact .flowColumn[style*="grid-column:2;"] .nodeCard{transform:translateY(0)!important;margin:0 0 4px!important;}.bracketScroller.isCompact .flowColumn:not([style*="grid-column:1;"]):not([style*="grid-column:2;"]) .nodeCard,.bracketScroller.isCompact .grandColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;}.bracketScroller.isCompact .flowColumn.beforeBaseRound{display:none!important;}.bracketScroller.isCompact .flowColumn.baseRound{display:flex!important;align-self:start!important;justify-content:flex-start!important;height:max-content!important;min-height:0!important;gap:4px!important;padding:0!important;}.bracketScroller.isCompact .flowColumn.baseRound .nodeCard{transform:translateY(0)!important;margin:0 0 4px!important;}.bracketScroller.isCompact .flowColumn.afterBaseRound .nodeCard,.bracketScroller.isCompact .grandColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;}.bracketScroller.isCompact .flowColumn.beforeBaseRound,.bracketScroller.isCompact .flowColumn[style*="grid-column:1;grid-row:1"]{display:flex!important;visibility:visible!important;}.bracketScroller.isCompact .flowColumn.beforeBaseRound{align-self:start!important;justify-content:flex-start!important;height:max-content!important;min-height:0!important;gap:4px!important;padding:0!important;}.bracketScroller.isCompact .flowColumn.beforeBaseRound .nodeCard{margin:0 0 4px!important;}.bracketScroller .flowColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;}.bracketScroller.isCompact .flowColumn.baseRound .nodeCard{transform:translateY(0px)!important;}.bracketScroller.isCompact .flowColumn.afterBaseRound .nodeCard,.bracketScroller.isCompact .grandColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;}.bracketScroller .flowColumn[style*="grid-row:2"]{transform:translateY(var(--lower-lane-y,0px))!important;transition:none!important;}.bracketScroller.isCompact .doubleArea{row-gap:10px!important;}.bracketScroller.isCompact .doubleArea{row-gap:4px!important}.bracketScroller .flowColumn[style*="grid-row:2"]{transform:translateY(var(--lower-lane-y,0px))!important;transition:none!important;will-change:transform;}.bracketScroller.isCompact .flowColumn.baseRound{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-self:start!important;height:max-content!important;min-height:0!important;gap:2px!important;padding:0!important;}.bracketScroller.isCompact .flowColumn.baseRound>h3{margin:0 0 3px!important;padding:0!important;}.bracketScroller.isCompact .flowColumn.baseRound .nodeCard{position:relative!important;transform:translateY(0)!important;margin:0 0 2px!important;flex:0 0 auto!important;}.bracketScroller.isCompact .flowColumn.baseRound .match{margin:0!important;}.bracketScroller .flowColumn[style*="grid-row:2"]{transform:translateY(var(--lower-lane-y,0px))!important;}.bracketScroller.isCompact .doubleArea{row-gap:6px!important}.bracketScroller.isCompact .doubleArea{row-gap:6px!important;}.bracketScroller.isCompact .flowColumn[style*="grid-row:2"]{transform:none!important;margin-top:calc(-1 * var(--lower-pull-up,0px))!important;transition:none!important;}.bracketScroller.isCompact .doubleCanvas{padding-bottom:4px!important;}.bracketScroller .flowColumn[style*="grid-row:2"] .nodeCard{transform:translateY(var(--align-y,0px))!important;}.connectorPath{stroke-linecap:round!important;stroke-linejoin:round!important}.bracketScroller .grandColumn .nodeCard{transform:translateY(var(--align-y,0px))!important;transition:none!important;}.connectorPath.upperConnector{stroke:#64748b!important}.connectorDot.upperConnectorDot{fill:#94a3b8!important}.connectorPath.lowerConnector{stroke:#3b82f6!important;stroke-width:2.4!important}.connectorDot.lowerConnectorDot{fill:#60a5fa!important}.match.hasFinish>.row.between.muted{grid-column:2!important;grid-row:1!important;width:100%!important;min-width:0!important;margin:0 0 4px!important;padding:0 2px!important;position:relative!important;left:auto!important;transform:none!important;z-index:6!important;}.match:not(.hasFinish)>.row.between.muted{position:relative!important;margin:0 0 4px!important;padding:0 2px!important;z-index:6!important;}.match .nodeCode{display:inline-flex!important;align-items:center!important;width:max-content!important;max-width:100%!important;position:relative!important;left:auto!important;top:auto!important;transform:none!important;margin:0!important;padding:2px 5px!important;border-radius:5px!important;background:#0b1630!important;color:#93c5fd!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;z-index:7!important;}.connectorSvg{z-index:1!important}.doubleArea{position:relative!important;z-index:2!important}.nodeCard{position:relative!important;z-index:3!important}.bracketScroller.isCompact .match.hasFinish>.row.between.muted{grid-column:2!important;margin:0 0 3px!important;padding:0 2px!important;}.liveMatchToolbar{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important}.liveRaceEditor{display:grid;grid-template-columns:auto 86px auto;align-items:end;gap:7px;max-width:430px}.liveRaceEditor label{grid-column:1 / -1;font-weight:800;font-size:13px;color:var(--text)}.liveRaceEditor .muted{grid-column:1 / -1;font-size:11px}.liveRaceEditor .input{height:40px;padding:7px 9px}@media(max-width:640px){.liveRaceEditor{grid-template-columns:1fr auto;width:100%;max-width:none}.liveRaceEditor label,.liveRaceEditor .muted{grid-column:1 / -1}}.cardRaceEditor{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:12px;font-weight:700;white-space:nowrap}.cardRaceEditor input{width:44px;height:25px;padding:2px 4px;border:1px solid var(--line);border-radius:7px;background:#020817;color:var(--text);font-size:12px;text-align:center}.cardRaceEditor input:focus{outline:2px solid rgba(52,211,153,.35);border-color:var(--green)}.bracketScroller.isCompact .cardRaceEditor{font-size:8px;gap:2px}.bracketScroller.isCompact .cardRaceEditor input{width:34px;height:20px;font-size:9px}.connectorPath.lowerConnector{stroke:#fb7a55!important;stroke-width:2.4!important;}.connectorDot.lowerConnectorDot{fill:#fdad91!important;}input.racePerMatch,input.racePerMatch:hover,input.racePerMatch:focus,input.racePerMatch:focus-visible,input.racePerMatch:active,.bracketScroller.isCompact input.racePerMatch,.bracketScroller.isCompact input.racePerMatch:focus{all:unset!important;display:inline-block!important;box-sizing:border-box!important;width:24px!important;color:var(--text)!important;font-family:inherit!important;font-size:inherit!important;font-weight:800!important;line-height:1.2!important;text-align:center!important;cursor:text!important;caret-color:currentColor!important;appearance:textfield!important;-webkit-appearance:none!important;-moz-appearance:textfield!important;}input.racePerMatch::-webkit-outer-spin-button,input.racePerMatch::-webkit-inner-spin-button{display:none!important;-webkit-appearance:none!important;margin:0!important;}.fixedBracketScrollbar{position:fixed;left:0;bottom:0;height:19px;overflow-x:scroll;overflow-y:hidden;z-index:99999;background:#0b1428;border-top:1px solid #334155;box-shadow:0 -3px 10px rgba(0,0,0,.28);scrollbar-color:#64748b #111827;scrollbar-width:auto}.fixedBracketScrollbarTrack{height:1px;min-width:100%}body{padding-bottom:21px!important}.connectorPath.lowerConnector{stroke:#d99a82!important;stroke-width:2.3!important;opacity:.88!important;}.connectorDot.lowerConnectorDot{fill:#e7b7a5!important;opacity:.9!important;}.shotBoard{display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,1.1fr) minmax(220px,1fr);gap:16px;margin-top:16px}.shotPanel{background:#182b3d;border:1px solid #375269;border-radius:18px;padding:20px;text-align:center}.shotPanel.activeTurn{border:2px solid #f5d675;box-shadow:0 0 18px #f5d67530}.shotScore{font-size:clamp(42px,6vw,86px);font-weight:900;color:#fff}.shotClock{font-size:clamp(100px,15vw,210px);font-weight:900;line-height:1.15;color:#52e4ce;font-variant-numeric:tabular-nums}.shotClock.warning{color:#ff719b}.shotActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}.shotActions .btn{flex:1;min-width:90px}.shotYellow{background:#f5d675!important;color:#142434!important}.shotPink{background:#ef729f!important;color:#142434!important}.shotSettings{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shotSettings label{font-size:12px}.shotSettings input{width:100%;margin-top:6px}.shotCounter{font-size:30px;font-weight:800;color:#f5d675}.shotPanel hr{border:0;border-top:1px solid #375269;margin:20px 0}.shotTop{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.shotTop select{flex:1;min-width:200px}.shotNotice{padding:10px;border-radius:8px;background:#ffffff09;margin:12px 0}.shotBoard button:disabled{opacity:.4;cursor:not-allowed}@media(max-width:850px){.shotBoard{grid-template-columns:1fr 1fr}.shotCenter{grid-column:1/-1;grid-row:1}.shotClock{font-size:120px}}@media(max-width:500px){.shotBoard{grid-template-columns:1fr}.shotCenter{grid-column:1}.shotPanel{padding:12px}}
+/* v73: layar penuh - 3 kolom, semua kontrol muat tanpa scroll */
+#app:fullscreen,#app:-webkit-full-screen{width:100vw;height:100vh;overflow:hidden;background:var(--bg)}
+#app:fullscreen .wrap{max-width:none;width:100%;height:100vh;padding:clamp(6px,1vh,14px);display:flex;flex-direction:column;overflow:hidden}
+#app:fullscreen .header,#app:fullscreen .tabs{display:none}
+#app:fullscreen .card{margin-bottom:0}
+#app:fullscreen #shotConsole{flex:1;min-height:0;display:flex;flex-direction:column;padding:clamp(8px,1.4vh,18px);overflow:hidden}
+#app:fullscreen .shotTop{flex:0 0 auto;gap:8px}
+#app:fullscreen .shotTop h2{font-size:clamp(14px,2vh,22px);margin:0}
+#app:fullscreen .shotTop .select{padding:5px 8px;font-size:clamp(11px,1.5vh,14px)}
+#app:fullscreen #shotConsole > p.muted{display:none}
+#app:fullscreen .shotBoard{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:clamp(6px,1vw,16px);margin-top:clamp(4px,1vh,10px);overflow:hidden}
+#app:fullscreen .shotCenter{grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:center;gap:clamp(2px,.7vh,8px);overflow:hidden;min-height:0}
+#app:fullscreen .shotCenter h2{font-size:clamp(11px,1.6vh,16px);margin:0;letter-spacing:.12em}
+#app:fullscreen .shotScore{font-size:clamp(20px,3.6vh,40px);line-height:1}
+#app:fullscreen .shotClock{font-size:min(21vh,12vw);line-height:.95;letter-spacing:-.03em}
+#app:fullscreen .muted{font-size:clamp(10px,1.35vh,13px);line-height:1.25}
+#app:fullscreen .shotActions{margin:0;gap:clamp(4px,.6vw,8px);flex-wrap:nowrap}
+#app:fullscreen .shotActions .btn{padding:clamp(4px,.9vh,10px) 8px;font-size:clamp(10px,1.45vh,14px);min-width:0;white-space:nowrap}
+#app:fullscreen .shotSettings{grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(3px,.5vw,10px)}
+#app:fullscreen .shotSettings label{font-size:clamp(8px,1.15vh,11px)}
+#app:fullscreen .shotSettings .input{padding:clamp(3px,.7vh,8px) 5px;font-size:clamp(10px,1.4vh,14px);margin-top:2px}
+#app:fullscreen .shotPanel{padding:clamp(6px,1.2vh,16px)}
+#app:fullscreen .shotSide{overflow:auto;min-height:0}
+#app:fullscreen .shotSide h2,#app:fullscreen .shotSide h3{font-size:clamp(11px,1.6vh,16px);margin:0 0 4px}
+#app:fullscreen .shotSide .btn{padding:clamp(3px,.8vh,9px) 8px;font-size:clamp(10px,1.4vh,13px)}
+
+/* v75: tata letak layar penuh - panel samping merata, jam besar, label besar */
+#app:fullscreen #shotConsole,#app:-webkit-full-screen #shotConsole{overflow:visible;padding:clamp(6px,1.1vh,14px)}
+#app:fullscreen .shotBoard,#app:-webkit-full-screen .shotBoard{overflow:visible;grid-template-rows:auto}
+#app:fullscreen .shotBoard > .shotPanel:not(.shotCenter){overflow:visible;display:flex;flex-direction:column;justify-content:space-evenly;gap:clamp(2px,.5vh,8px)}
+#app:fullscreen .shotBoard > .shotPanel:not(.shotCenter) hr{margin:clamp(3px,.8vh,12px) 0}
+#app:fullscreen .shotCenter{gap:clamp(2px,.6vh,7px)}
+#app:fullscreen .shotClock{font-size:min(26vh,14vw)}
+#app:fullscreen #shotConsole{transform:scale(var(--fsfit,1));transform-origin:top center;will-change:transform}
+#app:fullscreen #shotConsole{transition:none}
+#app:fullscreen .shotSettings label{font-size:clamp(10px,1.45vh,13px);font-weight:700;color:#cbd5e1;letter-spacing:-.015em}
+#app:fullscreen .shotSettings .input{font-size:clamp(12px,1.9vh,18px);padding:clamp(4px,.9vh,10px) 6px;font-weight:700}
+</style>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+<div id="saved" class="saved">Tersimpan</div>
+<div class="wrap">
+  <header class="header"><button class="btn danger" id="newTournament">Turnamen Baru</button></header>
+  <nav class="tabs" id="mainTabs"><button class="btn secondary tab active" data-tab="players">Tabel Tier Pemain</button><button class="btn secondary tab" data-tab="rules">Aturan Handicap</button><button class="btn secondary tab" data-tab="bracket">Bagan Pertandingan</button><button class="btn secondary tab" data-tab="history">Riwayat Turnamen</button><button class="btn secondary tab" data-tab="control">Kontrol Match</button></nav>
+  <main id="app"></main>
+</div>
+<script>
+const KEY='biliar-local-v1', RACE=3;
+const initial=()=>({players:[],participants:['',''],format:'single',raceTo:3,matches:[],champion:'',started:false,tournamentId:'',tournamentName:'',startedAt:'',completedAt:'',tournaments:[]});
+let data=load(), tab='players';
+function raceTarget(){return Math.max(1,Math.min(15,Number(data.raceTo)||3))}
+function matchRace(m){return Math.max(1,Math.min(15,Number(m&&m.raceTo)||3))}
+function load(){try{return {...initial(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return initial()}}
+function save(){const n=document.getElementById('saved');try{localStorage.setItem(KEY,JSON.stringify(data));if(n){n.textContent='Tersimpan';n.style.display='block';clearTimeout(window._st);window._st=setTimeout(()=>n.style.display='none',700)}return true}catch(error){console.error('Penyimpanan gagal',error);if(n){n.textContent='Gagal menyimpan. Ekspor backup sekarang.';n.style.display='block'}if(!window._storageWarning){window._storageWarning=true;alert('Data belum berhasil disimpan di browser. Gunakan Ekspor Backup sebelum menutup aplikasi.')}return false}}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function player(name){return data.players.find(p=>p.name===name)}
+function rule(m){const a=player(m.player1),b=player(m.player2);if(!a||!b)return null;const gap=Math.abs(a.tier-b.tier);return{gap,low:a.tier<b.tier?a:b}}
+function power2(n){let x=1;while(x<n)x*=2;return x}
+function label(r,t){const x=t-r;return x===0?'Final':x===1?'Semifinal':x===2?'Perempat Final':`Babak ${r}`}
+function single(count){const size=power2(Math.max(2,count)),total=Math.log2(size),out=[];for(let r=1;r<=total;r++){for(let p=0;p<size/2**r;p++)out.push({id:`s-${r}-${p}`,round:r,position:p,label:label(r,total),player1:'',player2:'',score1:0,score2:0,winner:'',loser:'',completed:false,nextMatchId:r<total?`s-${r+1}-${Math.floor(p/2)}`:null,nextSlot:p%2===0?'player1':'player2'})}return out}
+function doubleFirst(count){return Array.from({length:Math.ceil(count/2)},(_,p)=>({id:`d-1-${p}`,round:1,position:p,label:'Putaran 1',player1:'',player2:'',score1:0,score2:0,winner:'',loser:'',completed:false}))}
+
+function buildDoubleBracket(count,names){
+ const size=power2(Math.max(2,count)),ur=Math.log2(size),lr=Math.max(1,2*ur-2),matches=[];
+ const shuffled=shuffleList(names), firstCount=size/2;
+ // Sebarkan satu pemain ke setiap pertandingan terlebih dahulu.
+ // Dengan 9 pemain pada bagan 16, hasilnya 7 kartu BYE berisi tepat 1 nama
+ // dan 1 pertandingan berisi 2 nama, tanpa kartu putaran pertama yang kosong.
+ const firstSlots=Array.from({length:firstCount},()=>[]);
+ shuffled.slice(0,firstCount).forEach((name,i)=>firstSlots[i].push(name));
+ shuffled.slice(firstCount).forEach((name,i)=>firstSlots[i%firstCount].push(name));
+ for(let i=0;i<firstCount;i++)matches.push({id:`AR1.${i+1}`,code:`AR1.${i+1}`,section:'upper',round:1,position:i,label:'Atas R1',player1:firstSlots[i][0]||'',player2:firstSlots[i][1]||'',source1:'',source2:'',score1:0,score2:0,winner:'',loser:'',completed:false});
+ for(let r=2;r<=ur;r++)for(let i=0;i<size/2**r;i++){const src=upperSources(r,i);matches.push({id:`AR${r}.${i+1}`,code:`AR${r}.${i+1}`,section:'upper',round:r,position:i,label:r===ur?'Final Bagan Atas':`Atas R${r}`,player1:'',player2:'',source1:src[0],source2:src[1],score1:0,score2:0,winner:'',loser:'',completed:false})}
+ for(let r=1;r<=lr&&size>2;r++)for(let i=0;i<lowerMatchCount(count,r);i++){const src=lowerSources(count,r,i);matches.push({id:`BR${r}.${i+1}`,code:`BR${r}.${i+1}`,section:'lower',round:r,position:i,label:r===lr?'Final Bagan Bawah':`Bawah R${r}`,player1:'',player2:'',source1:src[0],source2:src[1],score1:0,score2:0,winner:'',loser:'',completed:false})}
+ matches.push({id:'GF.1',code:'GF.1',section:'final',round:1,position:0,label:'Grand Final',player1:'',player2:'',source1:`Pemenang AR${ur}.1`,source2:size===2?'Kalah AR1.1':`Pemenang BR${lr}.1`,score1:0,score2:0,winner:'',loser:'',completed:false});
+ return propagateDouble(matches);
+}
+function resolveSource(matches,text){const code=sourceCode(text);if(!code)return'';const m=matches.find(x=>x.code===code||x.id===code);if(!m||!m.completed)return'';return text.startsWith('Kalah')?m.loser:m.winner}
+function sourceFinished(matches,text){
+ if(!text)return true;
+ const code=sourceCode(text);if(!code)return true;
+ const source=matches.find(x=>x.code===code||x.id===code);
+ return Boolean(source&&source.completed);
+}
+function propagateDouble(matches){
+ let changed=true;
+ while(changed){
+  changed=false;
+  matches.forEach(m=>{
+   if(m.completed)return;
+   const a=m.source1?resolveSource(matches,m.source1):m.player1;
+   const b=m.source2?resolveSource(matches,m.source2):m.player2;
+   if(a&&!m.player1){m.player1=a;changed=true}
+   if(b&&!m.player2){m.player2=b;changed=true}
+
+   const source1Ready=sourceFinished(matches,m.source1);
+   const source2Ready=sourceFinished(matches,m.source2);
+   const hasOnePlayer=Boolean(m.player1)!==Boolean(m.player2);
+
+   // BYE: hanya satu pemain dan semua sumber pertandingan sudah selesai.
+   // Pemain otomatis maju sebagai pemenang tanpa mencatat pemain kalah.
+   if((hasOnePlayer||(!m.player1&&!m.player2))&&source1Ready&&source2Ready){
+    m.winner=m.player1||m.player2;
+    m.loser='';
+    m.completed=true;
+    m.bye=true;
+    changed=true;
+   }
+  });
+ }
+ return matches;
+}
+function seeded(){return data.matches.filter(m=>m.round===1).flatMap(m=>[m.player1,m.player2]).filter(Boolean)}
+function losses(){const x={};data.matches.forEach(m=>{if(m.completed&&m.loser)x[m.loser]=(x[m.loser]||0)+1});return x}
+function nextDouble(names,loss,r){const ordered=[...names].sort((a,b)=>(loss[a]||0)-(loss[b]||0)),out=[];for(let i=0;i<ordered.length;i+=2){const a=ordered[i]||'',b=ordered[i+1]||'';out.push({id:`d-${r}-${i/2}`,round:r,position:i/2,label:`Putaran ${r}`,player1:a,player2:b,score1:0,score2:0,winner:a&&!b?a:'',loser:'',completed:Boolean(a&&!b)})}return out}
+
+
+function shuffleList(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function participantNames(){return (data.participants||[]).filter(Boolean)}
+function fillFirstRound(matches,names){const shuffled=shuffleList(names), first=matches.filter(m=>m.round===1);let k=0;first.forEach(m=>{m.player1=shuffled[k++]||'';m.player2=shuffled[k++]||''});return matches}
+function processSingleByes(matches){
+ let changed=true;
+ while(changed){changed=false;for(const m of matches){
+  if(m.completed)continue;
+  const sources=matches.filter(x=>x.nextMatchId===m.id);
+  if(m.round>1&&(sources.length!==2||sources.some(x=>!x.completed)))continue;
+  if(m.player1&&m.player2)continue;
+  m.winner=m.player1||m.player2||'';m.loser='';m.completed=true;m.bye=true;changed=true;
+  if(m.nextMatchId){const next=matches.find(x=>x.id===m.nextMatchId);if(next)next[m.nextSlot]=m.winner;}
+ }}return matches;
+}
+function doubleLayout(count){
+ const size=power2(Math.max(2,count)), upperRounds=Math.log2(size), sections={upper:[],lower:[],final:[]};
+ for(let r=1;r<=upperRounds;r++){
+  const n=size/2**r;
+  sections.upper.push({title:r===upperRounds?'Final Bagan Atas':`Atas R${r}`,matches:Array.from({length:n},(_,i)=>({label:`A${r}.${i+1}`}))});
+ }
+ const lowerRounds=Math.max(1,2*upperRounds-2);
+ for(let r=1;r<=lowerRounds;r++){
+  const n=Math.max(1,Math.floor(size/2**(Math.floor((r+1)/2)+1)));
+  sections.lower.push({title:r===lowerRounds?'Final Bagan Bawah':`Bawah R${r}`,matches:Array.from({length:n},(_,i)=>({label:`B${r}.${i+1}`}))});
+ }
+ sections.final.push({title:'Grand Final',matches:[{label:'GF'}]});
+ return sections;
+}
+function raceEditor(m){const value=matchRace(m);return `<label class="cardRaceEditor"><span>Race to</span><input class="racePerMatch" type="number" min="1" max="15" step="1" value="${value}" data-id="${m.id}"></label>`;}
+function ghostMatch(code,kind,source1,source2){return `<div class="match ghost nodeCard ${kind==='final'?'grandCard':''}" data-node="${code}"><div class="row between muted"><span class="nodeCode">${code}</span><span>Race to ${raceTarget()}</span></div><div class="slot miniSlot"><div><div class="waiting">Menunggu</div><div class="sourceText">${source1}</div></div></div><div class="slot miniSlot"><div><div class="waiting">Menunggu</div><div class="sourceText">${source2}</div></div></div><button class="btn finishPlaceholder" disabled>Selesai</button></div>`}
+function upperRoundsFor(count){return Math.log2(power2(Math.max(2,count)))}
+function lowerRoundCount(count){return Math.max(1,2*upperRoundsFor(count)-2)}
+function upperMatchCount(count,r){return power2(Math.max(2,count))/2**r}
+function lowerMatchCount(count,r){const size=power2(Math.max(2,count));return Math.max(1,Math.floor(size/2**(Math.floor((r+1)/2)+1)))}
+function upperSources(r,i){return r===2?[`Pemenang AR1.${i*2+1}`,`Pemenang AR1.${i*2+2}`]:[`Pemenang AR${r-1}.${i*2+1}`,`Pemenang AR${r-1}.${i*2+2}`]}
+function lowerSources(count,r,i){
+ if(r===1)return [`Kalah AR1.${i*2+1}`,`Kalah AR1.${i*2+2}`];
+ if(r%2===0)return [`Pemenang BR${r-1}.${i+1}`,`Kalah AR${Math.floor(r/2)+1}.${i+1}`];
+ return [`Pemenang BR${r-1}.${i*2+1}`,`Pemenang BR${r-1}.${i*2+2}`];
+}
+function sourceCode(text){const m=text.match(/(?:Pemenang|Kalah)\s+([A-Z]+\d+\.\d+)/);return m?m[1]:''}
+function doubleMatchCard(m){
+ const ru=rule(m),ready=m.player1&&m.player2,done=m.completed;
+ const person=(name,source,n)=>{const p=player(name);if(!name&&m.bye&&!source)return'';const isLower=Boolean(ru&&ru.gap&&ru.low&&ru.low.name===name);const handicapBadge=isLower?`<span class="inlineHandicap" title="Handicap: boleh memasukkan bola 8 saat tersisa ${ru.gap} bola">(-${ru.gap})</span>`:'';return `<div class="slot miniSlot">${name?`<div class="playerIdentity">${handicapBadge}<div class="playerText"><b>${esc(name)}</b>${p?`<div class="muted">Tier ${p.tier}</div>`:''}</div></div>${m.bye?'':`<input class="input score" type="number" min="0" max="${matchRace(m)}" value="${m['score'+n]}" data-id="${m.id}" data-field="score${n}" ${done?'disabled':''}>`}`:`<div><div class="waiting">Menunggu</div><div class="sourceText">${source||'Slot BYE'}</div></div>`}</div>`};
+ return `<div class="match nodeCard ${m.section==='final'?'grandCard':''} ${ready&&!done?'hasFinish':''}" data-node="${m.code}" data-source1="${esc(m.source1||'')}" data-source2="${esc(m.source2||'')}"><div class="row between muted"><span class="nodeCode">${m.section==='lower'&&data.matches.some(g=>g.code==='GF.1'&&sourceCode(g.source2)===m.code)?'Semi Final':m.code}</span>${raceEditor(m)}</div>${person(m.player1,m.source1,1)}${person(m.player2,m.source2,2)}${ready&&!done?`<button class="btn primary finish" data-id="${m.id}" ${(Math.max(m.score1,m.score2)!==matchRace(m)||m.score1===m.score2)?'disabled':''}>Selesai</button>`:`${!done?'<button class="btn finishPlaceholder" disabled>Selesai</button>':''}`}${done?`<div style="color:var(--green);font-weight:800">${m.bye?'BYE, otomatis maju:':'Pemenang:'} ${esc(m.winner)}</div>`:''}</div>`;
+}
+function doubleOverview(){
+ const count=participantNames().length,ur=upperRoundsFor(count),lr=lowerRoundCount(count),upper=[],lower=[];
+ for(let r=1;r<=ur;r++){const ms=data.matches.filter(m=>m.section==='upper'&&m.round===r);upper.push(`<div class="flowColumn" style="grid-column:${r};grid-row:1"><h3 style="color:var(--green)">${r===ur?'Final Bagan Atas':`Atas R${r}`}</h3>${ms.map(doubleMatchCard).join('')}</div>`)}
+ for(let r=1;r<=lr;r++){const ms=data.matches.filter(m=>m.section==='lower'&&m.round===r);lower.push(`<div class="flowColumn" style="grid-column:${r};grid-row:2"><h3 style="color:#60a5fa">${r===lr?'Final Bagan Bawah':`Bawah R${r}`}</h3>${ms.map(doubleMatchCard).join('')}</div>`)}
+ const gf=data.matches.find(m=>m.section==='final');const gfcol=Math.max(ur,lr)+1;
+ return `<div class="bracketScroller" id="bracketScroller"><div class="doubleCanvas" id="doubleCanvas"><svg class="connectorSvg" id="connectorSvg"></svg><div class="doubleArea" style="--cols:${Math.max(ur,lr)};--gf-col:${gfcol}">${upper.join('')}${lower.join('')}<div class="flowColumn grandColumn"><h3 style="color:var(--amber)">Grand Final</h3>${gf?doubleMatchCard(gf):''}</div></div></div></div>`;
+}
+function alignAdvancingMatches(){
+ const canvas=document.getElementById('doubleCanvas');if(!canvas)return;
+ const compact=canvas.classList.contains('laterRoundsFocus');
+ const baseRound=compact?Number(canvas.dataset.baseRound||2):1;
+ const nodes=[...canvas.querySelectorAll('[data-node]')];
+ const parse=code=>{const m=String(code||'').match(/^([A-Z]+)(\d+)\.(\d+)$/);return m?{section:m[1],round:Number(m[2]),match:Number(m[3])}:null};
+
+ // Reset semua posisi sebelum menghitung ulang.
+ nodes.forEach(node=>{node.style.setProperty('--align-y','0px');node.style.zIndex='2'});
+
+ const ordered=nodes.map(node=>({node,info:parse(node.dataset.node)}))
+  .filter(x=>x.info)
+  .sort((a,b)=>{
+   const sectionOrder={AR:1,BR:2,GF:3};
+   return (sectionOrder[a.info.section]||9)-(sectionOrder[b.info.section]||9)
+    ||a.info.round-b.info.round||a.info.match-b.info.match;
+  });
+
+ ordered.forEach(({node,info})=>{
+  // Mode normal: R1 menjadi dasar. Mode padat: R2 Atas dan R2 Bawah
+  // menjadi dasar yang disusun rapat. R3 dan seterusnya mengikuti titik tengah sumber.
+  if(info.section!=='GF'){
+   if(!compact&&info.round<=1)return;
+   if(compact&&info.round<=baseRound)return;
+  }
+
+  const sourceCodes=[node.dataset.source1||'',node.dataset.source2||''].map(sourceCode).filter(Boolean);
+  const sourceNodes=sourceCodes.map(code=>canvas.querySelector(`[data-node="${code}"]`)).filter(Boolean);
+  const sameLane=sourceNodes.filter(source=>{const parsed=parse(source.dataset.node);return parsed&&parsed.section===info.section});
+  const alignmentSources=info.section==='GF'?sourceNodes:sameLane;
+  if(alignmentSources.length!==2)return;
+
+  const centers=alignmentSources.map(source=>{const r=source.getBoundingClientRect();return r.top+r.height/2});
+  const desiredCenter=(centers[0]+centers[1])/2;
+  const targetRect=node.getBoundingClientRect();
+  const targetCenter=targetRect.top+targetRect.height/2;
+  node.style.setProperty('--align-y',`${desiredCenter-targetCenter}px`);
+ });
+}
+function alignLowerFinalWithSources(){
+ const canvas=document.getElementById('doubleCanvas');if(!canvas)return;
+ const lowerMatches=[...canvas.querySelectorAll('[data-node^="BR"]')];
+ if(!lowerMatches.length)return;
+ const parse=code=>{const m=String(code||'').match(/^BR(\d+)\.(\d+)$/);return m?{round:Number(m[1]),match:Number(m[2])}:null};
+ const finalNode=lowerMatches.map(node=>({node,info:parse(node.dataset.node)})).filter(x=>x.info).sort((a,b)=>b.info.round-a.info.round||a.info.match-b.info.match)[0]?.node;
+ if(!finalNode)return;
+ finalNode.style.setProperty('--align-y','0px');
+ const sourceCodes=[finalNode.dataset.source1||'',finalNode.dataset.source2||''].map(sourceCode).filter(Boolean);
+ const sources=sourceCodes.map(code=>canvas.querySelector(`[data-node="${code}"]`)).filter(Boolean);
+ if(sources.length!==2)return;
+ const centers=sources.map(node=>{const r=node.getBoundingClientRect();return r.top+r.height/2});
+ const desiredCenter=(centers[0]+centers[1])/2;
+ const rect=finalNode.getBoundingClientRect();
+ finalNode.style.setProperty('--align-y',`${desiredCenter-(rect.top+rect.height/2)}px`);
+}
+function bringLowerBracketCloser(){
+ const canvas=document.getElementById('doubleCanvas');if(!canvas)return;
+ const area=canvas.querySelector('.doubleArea');
+ if(!area)return;
+ area.style.setProperty('--lower-pull-up','0px');
+ if(!canvas.classList.contains('laterRoundsFocus'))return;
+
+ const upperBase=canvas.querySelector('.flowColumn.baseRound[style*="grid-row:1"]');
+ const lowerBase=canvas.querySelector('.flowColumn.baseRound[style*="grid-row:2"]');
+ if(!upperBase||!lowerBase)return;
+ const upperCards=[...upperBase.querySelectorAll('.nodeCard')];
+ const lowerCards=[...lowerBase.querySelectorAll('.nodeCard')];
+ if(!upperCards.length||!lowerCards.length)return;
+
+ const upperBottom=Math.max(...upperCards.map(card=>card.getBoundingClientRect().bottom));
+ const lowerTop=Math.min(...lowerCards.map(card=>card.getBoundingClientRect().top));
+ const desiredGap=6;
+ const pullUp=Math.max(0,lowerTop-(upperBottom+desiredGap));
+ area.style.setProperty('--lower-pull-up',`${pullUp}px`);
+
+ // Recalculate GF after the lower row has moved in actual layout space.
+ requestAnimationFrame(()=>{
+  const gf=canvas.querySelector('[data-node="GF.1"]');
+  if(!gf)return;
+  gf.style.setProperty('--align-y','0px');
+  const upperCode=sourceCode(gf.dataset.source1||'');
+  const upperFinal=upperCode?canvas.querySelector(`[data-node="${upperCode}"]`):null;
+  if(!upperFinal)return;
+  const upperRect=upperFinal.getBoundingClientRect();
+  const rect=gf.getBoundingClientRect();
+  gf.style.setProperty('--align-y',`${(upperRect.top+upperRect.height/2)-(rect.top+rect.height/2)}px`);
+  drawConnectors();
+ });
+}
+function alignGrandFinalWithUpperFinal(){
+ const canvas=document.getElementById('doubleCanvas');if(!canvas)return;
+ const gf=canvas.querySelector('[data-node="GF.1"]');if(!gf)return;
+ gf.style.setProperty('--align-y','0px');
+ const upperCode=sourceCode(gf.dataset.source1||'');
+ const upperFinal=upperCode?canvas.querySelector(`[data-node="${upperCode}"]`):null;
+ if(!upperFinal)return;
+ const upperRect=upperFinal.getBoundingClientRect();
+ const gfRect=gf.getBoundingClientRect();
+ const upperCenter=upperRect.top+upperRect.height/2;
+ const gfCenter=gfRect.top+gfRect.height/2;
+ gf.style.setProperty('--align-y',`${upperCenter-gfCenter}px`);
+}
+let bracketResizeObserver=null;
+let connectorFrame=0;
+function scheduleBracketGeometry(){
+ cancelAnimationFrame(connectorFrame);
+ connectorFrame=requestAnimationFrame(()=>{
+  try{updateDynamicBracketDensity();alignAdvancingMatches();alignLowerFinalWithSources();bringLowerBracketCloser();alignGrandFinalWithUpperFinal();connectorFrame=requestAnimationFrame(drawConnectors)}catch(error){console.warn(error)}
+ });
+}
+function observeBracketGeometry(){
+ const canvas=document.getElementById('doubleCanvas');
+ if(bracketResizeObserver){bracketResizeObserver.disconnect();bracketResizeObserver=null}
+ if(!canvas||typeof ResizeObserver==='undefined')return;
+ bracketResizeObserver=new ResizeObserver(scheduleBracketGeometry);
+ bracketResizeObserver.observe(canvas);
+ canvas.querySelectorAll('[data-node]').forEach(node=>bracketResizeObserver.observe(node));
+}
+function updateDynamicBracketDensity(){
+ const canvas=document.getElementById('doubleCanvas');
+ const scroller=document.getElementById('bracketScroller');
+ if(!canvas||!scroller)return;
+ const columns=[...canvas.querySelectorAll('.flowColumn:not(.grandColumn)')];
+ const firstColumn=columns.find(col=>(col.getAttribute('style')||'').includes('grid-column:1;'));
+ const colWidth=firstColumn?firstColumn.getBoundingClientRect().width:235;
+ const area=getComputedStyle(canvas.querySelector('.doubleArea'));
+ const colGap=parseFloat(area.columnGap)||54;
+ const step=Math.max(1,colWidth+colGap);
+ // R1 menjadi dasar saat scroll di kiri. Setelah satu lebar kolom terlewati,
+ // R2 menjadi dasar; setelah dua kolom, R3 menjadi dasar, dan seterusnya.
+ const baseRound=Math.max(1,Math.floor((scroller.scrollLeft+step*.22)/step)+1);
+ const compact=baseRound>1;
+ canvas.dataset.baseRound=String(baseRound);
+ canvas.classList.toggle('laterRoundsFocus',compact);
+ scroller.classList.toggle('isCompact',compact);
+ canvas.style.setProperty('--dynamic-density',compact?'0.66':'1');
+ columns.forEach(col=>{
+  const match=(col.getAttribute('style')||'').match(/grid-column:(\d+)/);
+  const round=match?Number(match[1]):1;
+  col.classList.toggle('beforeBaseRound',compact&&round<baseRound);
+  col.classList.toggle('baseRound',round===baseRound);
+  col.classList.toggle('afterBaseRound',round>baseRound);
+ });
+}
+function scheduleDynamicBracket(){
+ updateDynamicBracketDensity();
+ scheduleBracketGeometry();
+}
+function drawConnectors(){
+ const canvas=document.getElementById('doubleCanvas'),svg=document.getElementById('connectorSvg');if(!canvas||!svg)return;
+ const box=canvas.getBoundingClientRect();
+ const width=Math.max(canvas.scrollWidth,box.width),height=Math.max(canvas.scrollHeight,box.height);
+ svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.setAttribute('width',width);svg.setAttribute('height',height);
+ svg.style.width=`${width}px`;svg.style.height=`${height}px`;svg.innerHTML='';
+ canvas.querySelectorAll('[data-node]').forEach(target=>{
+  const targetCode=target.dataset.node||'';
+  [target.dataset.source1||'',target.dataset.source2||''].forEach(sourceText=>{
+   const code=sourceCode(sourceText);if(!code)return;
+   if(code.startsWith('AR')&&targetCode.startsWith('BR'))return;
+   const source=canvas.querySelector(`[data-node="${code}"]`);if(!source)return;
+   const a=source.getBoundingClientRect(),b=target.getBoundingClientRect();
+   const x1=a.right-box.left+canvas.scrollLeft;
+   const y1=a.top+a.height/2-box.top+canvas.scrollTop;
+   const x2=b.left-box.left+canvas.scrollLeft;
+   const y2=b.top+b.height/2-box.top+canvas.scrollTop;
+   const mid=x1+Math.max(14,(x2-x1)/2);
+   const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+   const sourceIsLower=code.startsWith('BR');
+   const targetIsLower=targetCode.startsWith('BR');
+   const lowerRoute=sourceIsLower||targetIsLower;
+   path.setAttribute('class',`connectorPath ${lowerRoute?'lowerConnector':'upperConnector'}`);
+   const directUpperFinalToGrand=targetCode==='GF.1'&&code.startsWith('AR');
+   path.setAttribute('d',directUpperFinalToGrand?`M ${x1} ${y1} L ${x2} ${y2}`:`M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`);
+   path.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(path);
+   [[x1,y1],[x2,y2]].forEach(([x,y])=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('class',`connectorDot ${lowerRoute?'lowerConnectorDot':'upperConnectorDot'}`);c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','3');svg.appendChild(c)});
+  });
+ });
+}
+let savedBracketScrollLeft=Number(sessionStorage.getItem('bracketScrollLeft')||0);
+function rememberBracketScroll(){
+ const scroller=document.getElementById('bracketScroller');
+ if(scroller){
+  savedBracketScrollLeft=scroller.scrollLeft;
+  sessionStorage.setItem('bracketScrollLeft',String(savedBracketScrollLeft));
+ }
+}
+function restoreBracketScroll(){
+ const scroller=document.getElementById('bracketScroller');
+ if(!scroller)return;
+ const saved=Number(sessionStorage.getItem('bracketScrollLeft')||savedBracketScrollLeft||0);
+ if(saved>0){
+  scroller.scrollLeft=saved;
+  requestAnimationFrame(()=>{scroller.scrollLeft=saved});
+ }
+}
+function setupFixedBracketScrollbar(){
+ const scroller=document.getElementById('bracketScroller');
+ let fixed=document.getElementById('fixedBracketScrollbar');
+ if(!scroller){if(fixed)fixed.remove();if(window._fixedScrollbarResize){window.removeEventListener('resize',window._fixedScrollbarResize);window._fixedScrollbarResize=null}return}
+ if(!fixed){
+  fixed=document.createElement('div');fixed.id='fixedBracketScrollbar';fixed.className='fixedBracketScrollbar';
+  const track=document.createElement('div');track.id='fixedBracketScrollbarTrack';track.className='fixedBracketScrollbarTrack';fixed.appendChild(track);
+  document.body.appendChild(fixed);
+ }
+ const track=document.getElementById('fixedBracketScrollbarTrack');
+ let syncing=false;
+ const size=()=>{const r=scroller.getBoundingClientRect();fixed.style.left=`${Math.max(0,r.left)}px`;fixed.style.width=`${Math.max(0,Math.min(innerWidth,r.right)-Math.max(0,r.left))}px`;track.style.width=`${scroller.scrollWidth}px`;fixed.style.display=scroller.scrollWidth>scroller.clientWidth+2?'block':'none';fixed.scrollLeft=scroller.scrollLeft};
+ fixed.onscroll=()=>{if(syncing)return;syncing=true;scroller.scrollLeft=fixed.scrollLeft;syncing=false};
+ scroller.addEventListener('scroll',()=>{if(syncing)return;syncing=true;fixed.scrollLeft=scroller.scrollLeft;syncing=false},{passive:true});
+ if(window._fixedScrollbarResize)window.removeEventListener('resize',window._fixedScrollbarResize);window._fixedScrollbarResize=size;window.addEventListener('resize',size,{passive:true});requestAnimationFrame(size);setTimeout(()=>{if(scroller.isConnected)size()},150);
+}
+function render(){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.getElementById('app').innerHTML=tab==='players'?playersView():tab==='rules'?rulesView():bracketView();bind();requestAnimationFrame(()=>{try{restoreBracketScroll();setupFixedBracketScrollbar();const scroller=document.getElementById('bracketScroller');if(scroller&&!scroller.dataset.bound){scroller.dataset.bound='1';scroller.addEventListener('scroll',()=>{savedBracketScrollLeft=scroller.scrollLeft;sessionStorage.setItem('bracketScrollLeft',String(savedBracketScrollLeft));scheduleDynamicBracket()},{passive:true})}updateDynamicBracketDensity();alignAdvancingMatches();alignLowerFinalWithSources();bringLowerBracketCloser();alignGrandFinalWithUpperFinal();requestAnimationFrame(()=>{drawConnectors();observeBracketGeometry()})}catch(error){console.warn(error)}})}
+function playersView(){return `<section class="card"><h2>Database Tier Pemain</h2><p class="muted">Simpan semua pemain di sini. Peserta turnamen dipilih kemudian melalui dropdown.</p><div class="grid">${[1,2,3,4,5,6].map(t=>{const ps=data.players.filter(p=>p.tier===t);return `<div class="tier"><div class="row between"><b style="color:var(--green)">Tier ${t}</b><span class="badge">${ps.length}</span></div><div class="row" style="margin-top:10px"><input class="input tierName" data-tier="${t}" placeholder="Nama pemain"><button class="btn primary add" data-tier="${t}">+</button></div>${ps.map(p=>`<div class="player"><span>${esc(p.name)}</span><button class="btn secondary del" data-id="${p.id}">Hapus</button></div>`).join('')}</div>`}).join('')}</div><div class="actions"><div><b>Simpan dan hubungkan daftar pemain</b><div class="muted">Menyimpan database dan membuka pengaturan bagan.</div></div><button class="btn primary" id="saveRoster" ${data.players.length<2||data.matches.length?'disabled':''}>Simpan & Segarkan Bagan</button></div></section>`}
+function rulesView(){return `<section class="card"><h2>Aturan Handicap</h2>${[0,1,2,3,4,5].map(g=>`<div class="player"><b>Selisih ${g} tier</b><span>${g===0?'Aturan bola 8 normal.':`Tier lebih rendah boleh memasukkan bola 8 saat tersisa ${g} bola kelompoknya.`}</span></div>`).join('')}</section>`}
+function participantOptions(current){const selected=participantNames();return `<option value="">Pilih pemain</option>`+data.players.map(p=>`<option value="${esc(p.name)}" ${(selected.includes(p.name)&&p.name!==current)?'disabled':''} ${p.name===current?'selected':''}>${esc(p.name)} (Tier ${p.tier})</option>`).join('')}
+function setupView(){const rows=data.participants||['',''];const valid=rows.filter(Boolean),unique=new Set(valid).size===valid.length;return `<section class="card"><h2>Peserta & Jenis Bagan</h2><p class="muted">Tambahkan slot peserta, pilih nama dari database tier, kemudian generate. Posisi pemain akan diacak otomatis.</p><div class="form3" style="grid-template-columns:minmax(180px,1fr) minmax(150px,220px) auto"><label>Jenis bagan<select id="format" class="select"><option value="single" ${data.format==='single'?'selected':''}>Single Elimination</option><option value="double" ${data.format==='double'?'selected':''}>Double Elimination</option></select></label><label>Mode pertandingan<input id="raceTo" class="input" type="number" min="1" max="15" step="1" value="${raceTarget()}"><span class="muted" style="display:block;margin-top:5px;font-size:12px">Default Race to 3</span></label><button id="addParticipant" class="btn secondary">+ Tambah Peserta</button></div><div class="participantTable">${rows.map((name,i)=>`<div class="participantRow"><span class="participantNo">${i+1}</span><select class="select participantSelect" data-index="${i}">${participantOptions(name)}</select><button class="btn secondary removeParticipant" data-index="${i}" ${rows.length<=2?'disabled':''}>Hapus</button></div>`).join('')}</div><div class="actions"><div><b>${valid.length} peserta dipilih</b><div class="muted">Minimal 2 pemain, tidak boleh ada nama ganda.</div></div><button id="generateRandom" class="btn primary" ${valid.length<2||!unique||valid.length!==rows.length?'disabled':''}>Acak & Generate Bagan</button></div></section>`}
+function bracketView(){if(!data.matches.length)return setupView();
+const seeds=seeded(),editable=!data.started;const grouped={};data.matches.forEach(m=>{if(!data.started&&m.round>1)return;if(data.started&&m.round>1&&!m.player1&&!m.player2)return;(grouped[m.round]??=[]).push(m)});return `<div class="toolbar"><button id="backGenerate" class="btn secondary">${data.started?'Batalkan Turnamen & Generate Ulang':'Kembali ke Pengaturan Bagan'}</button></div>${!data.started?`<div class="notice"><b>Isi ${data.participantCount} peserta.</b> Nama terisi ${seeds.length}/${data.participantCount}. Setiap nama hanya boleh dipakai sekali.<br><button id="start" class="btn primary" style="margin-top:10px" ${seeds.length!==data.participantCount||new Set(seeds).size!==seeds.length?'disabled':''}>Kunci Peserta & Mulai</button></div>`:''}${data.champion?`<div class="winner"><div>JUARA</div><h2>${esc(data.champion)}</h2></div>`:''}<section class="card"><h2>${data.format==='double'?'Double Elimination':'Single Elimination'}</h2>${data.format==='double'?'':`<p class="muted">Putaran berikutnya muncul otomatis ketika peserta sudah ditentukan.</p>`}${data.format==='double'?doubleOverview():`<div class="bracket">${Object.entries(grouped).sort((a,b)=>a[0]-b[0]).map(([r,ms])=>`<div class="round flowCol"><h3 style="color:var(--green)">${ms[0].label}</h3>${ms.map(m=>matchCard(m,editable&&m.round===1,seeds)).join('')}</div>`).join('')}</div>`}</section>`}
+function options(current,seeds){return `<option value="">Pilih pemain</option>`+data.players.map(p=>`<option value="${esc(p.name)}" ${(seeds.includes(p.name)&&p.name!==current)?'disabled':''} ${p.name===current?'selected':''}>${esc(p.name)} (Tier ${p.tier})</option>`).join('')}
+function matchCard(m,edit,seeds,code=''){const ru=rule(m),showFinish=!edit&&!m.completed&&m.player1&&m.player2;return `<div class="match ${showFinish?'hasFinish':''}"><div class="row between muted"><span>${code||`Laga ${m.position+1}`}</span><span>Race to ${raceTarget()}</span></div>${[1,2].map(n=>{const name=m['player'+n],p=player(name),isLower=Boolean(ru&&ru.gap&&ru.low&&ru.low.name===name),handicapBadge=isLower?`<span class="inlineHandicap" title="Handicap: boleh memasukkan bola 8 saat tersisa ${ru.gap} bola">(-${ru.gap})</span>`:'';return `<div class="slot">${edit?`<select class="select seed" data-id="${m.id}" data-slot="player${n}">${options(name,seeds)}</select>`:`<div class="playerIdentity">${handicapBadge}<div class="playerText"><b>${esc(name||'Menunggu pemain')}</b>${p?`<div class="muted">Tier ${p.tier}</div>`:''}</div></div>`}<input class="input score" type="number" min="0" max="${matchRace(m)}" value="${m['score'+n]}" data-id="${m.id}" data-field="score${n}" ${(edit||m.completed||!name)?'disabled':''}></div>`}).join('')}${!edit&&!m.completed&&m.player1&&m.player2?`<button class="btn primary finish" data-id="${m.id}" ${(Math.max(m.score1,m.score2)!==matchRace(m)||m.score1===m.score2)?'disabled':''}>Selesai</button>`:''}${m.completed?`<div style="color:var(--green);font-weight:800">Pemenang: ${esc(m.winner)}</div>`:''}</div>`}
+function bind(){document.querySelectorAll('.add').forEach(b=>b.onclick=()=>{const t=+b.dataset.tier,i=document.querySelector(`.tierName[data-tier="${t}"]`),name=i.value.trim();if(!name||data.players.some(p=>p.name.toLowerCase()===name.toLowerCase()))return;data.players.push({id:crypto.randomUUID(),name,tier:t});save();render()});document.querySelectorAll('.tierName').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')document.querySelector(`.add[data-tier="${i.dataset.tier}"]`).click()});document.querySelectorAll('.del').forEach(b=>b.onclick=()=>{const target=data.players.find(p=>p.id===b.dataset.id);if(!target)return;const used=data.matches.some(m=>m.player1===target.name||m.player2===target.name||m.winner===target.name||m.loser===target.name);const message=used?'Pemain ini sudah dipakai di bagan. Menghapus pemain juga akan menghapus bagan dan skor turnamen. Lanjutkan?':`Hapus ${target.name} dari database pemain?`;if(!confirm(message))return;if(used){data.matches=[];data.champion='';data.started=false}data.players=data.players.filter(p=>p.id!==b.dataset.id);if(data.participantCount>data.players.length)data.participantCount=Math.max(2,data.players.length);save();render()});const sr=document.getElementById('saveRoster');if(sr)sr.onclick=()=>{save();tab='bracket';render()};const bg=document.getElementById('backGenerate');if(bg)bg.onclick=()=>{if(data.started&&!confirm('Batalkan turnamen yang sedang berjalan dan kembali ke daftar peserta? Skor dan bagan akan dihapus.'))return;data.matches=[];data.resultHistory=[];data.champion='';data.started=false;save();render()};const ap=document.getElementById('addParticipant');if(ap)ap.onclick=()=>{data.participants=[...(data.participants||[]),''];save();render()};document.querySelectorAll('.participantSelect').forEach(x=>x.onchange=()=>{data.participants[+x.dataset.index]=x.value;save();render()});document.querySelectorAll('.removeParticipant').forEach(x=>x.onclick=()=>{data.participants.splice(+x.dataset.index,1);save();render()});const rt=document.getElementById('raceTo');if(rt)rt.onchange=()=>{data.raceTo=Math.max(1,Math.min(15,Number(rt.value)||3));rt.value=data.raceTo;save()};const gr=document.getElementById('generateRandom');if(gr)gr.onclick=()=>{const names=participantNames();data.format=document.getElementById('format').value;data.raceTo=Math.max(1,Math.min(15,Number(document.getElementById('raceTo').value)||3));let matches;if(data.format==='double'){matches=buildDoubleBracket(names.length,names)}else{matches=fillFirstRound(single(names.length),names);matches=processSingleByes(matches)}matches.forEach(m=>{if(!m.raceTo)m.raceTo=3});data.matches=matches;data.resultHistory=[];data.tournamentId=newTournamentId();data.startedAt=new Date().toISOString();data.completedAt='';data.started=true;data.champion='';save();render()};document.querySelectorAll('.racePerMatch').forEach(input=>input.onchange=()=>{const m=data.matches.find(x=>x.id===input.dataset.id);if(!m)return;const target=Math.max(1,Math.min(15,Number(input.value)||3));rememberBracketScroll();m.raceTo=target;if(!m.completed){m.score1=Math.min(Number(m.score1)||0,target);m.score2=Math.min(Number(m.score2)||0,target)}save();render()});document.querySelectorAll('.score').forEach(i=>i.oninput=()=>{
+ const m=data.matches.find(x=>x.id===i.dataset.id);if(!m)return;
+ m[i.dataset.field]=Math.max(0,Math.min(matchRace(m),+i.value||0));
+ save();
+ // Jangan render ulang seluruh bagan saat skor diketik karena render ulang
+ // membuat elemen scroller baru dan mengembalikan scrollLeft ke posisi 0.
+ const card=i.closest('.match');
+ const finishButton=card?card.querySelector('.finish'):null;
+ if(finishButton)finishButton.disabled=(Math.max(m.score1,m.score2)!==matchRace(m)||m.score1===m.score2);
+});document.querySelectorAll('.finish').forEach(b=>b.onclick=()=>{rememberBracketScroll();finish(b.dataset.id)})}
+function finish(id){
+ const m=data.matches.find(x=>x.id===id);if(!m||m.completed||Math.max(m.score1,m.score2)!==matchRace(m)||m.score1===m.score2)return;
+ rememberBracketScroll();rememberResult();m.winner=m.score1>m.score2?m.player1:m.player2;m.loser=m.score1>m.score2?m.player2:m.player1;m.completed=true;
+ if(data.format==='single'){
+  if(m.nextMatchId){const n=data.matches.find(x=>x.id===m.nextMatchId);n[m.nextSlot]=m.winner}else data.champion=m.winner;
+  processSingleByes(data.matches);const final=data.matches.find(x=>!x.nextMatchId);if(final&&final.completed)data.champion=final.winner;
+ }else{
+  data.matches=propagateDouble(data.matches);
+  const gf=data.matches.find(x=>x.code==='GF.1');if(gf&&gf.completed)data.champion=gf.winner;
+ }
+ save();render();
+}
+
+// v60: portable backups and safe rollback of the latest submitted result.
+function resultSnapshot(){return JSON.parse(JSON.stringify({matches:data.matches,champion:data.champion||''}))}
+function rememberResult(){data.resultHistory=[...(data.resultHistory||[]),resultSnapshot()].slice(-20)}
+function undoLastResult(){
+ const history=data.resultHistory||[];if(!history.length){alert('Belum ada hasil yang bisa dibatalkan pada versi ini.');return}
+ if(!confirm('Batalkan hasil terakhir beserta kemajuan otomatis setelahnya? Race to saat ini tetap dipertahankan.'))return;
+ rememberBracketScroll();const targets=new Map(data.matches.map(m=>[m.id,m.raceTo]));
+ const snapshot=history.pop();data.matches=snapshot.matches;data.matches.forEach(m=>{if(targets.has(m.id))m.raceTo=targets.get(m.id)});data.champion=snapshot.champion;save();render();
+}
+function downloadBackup(){
+ const blob=new Blob([JSON.stringify({application:'turnamen-biliar',version:70,exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='backup-biliar-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function validateBackup(raw){
+ const d=raw&&raw.application==='turnamen-biliar'?raw.data:raw;
+ if(!d||!Array.isArray(d.players)||!Array.isArray(d.participants)||!Array.isArray(d.matches)||!['single','double'].includes(d.format)||typeof d.started!=='boolean')throw Error('Struktur backup tidak sesuai.');
+ if(d.players.length>10000||d.matches.length>10000||d.participants.length>10000)throw Error('Jumlah data terlalu besar.');
+ const names=new Set();for(const p of d.players){if(!p||typeof p.name!=='string'||!p.name.trim()||names.has(p.name)||!Number.isFinite(Number(p.tier)))throw Error('Database pemain tidak valid.');names.add(p.name)}
+ if(d.participants.some(n=>typeof n!=='string'||(n&&!names.has(n))))throw Error('Peserta tidak ditemukan di database pemain.');
+ const ids=new Set();for(const m of d.matches){if(!m||typeof m.id!=='string'||ids.has(m.id)||typeof m.player1!=='string'||typeof m.player2!=='string'||typeof m.completed!=='boolean'||![m.score1,m.score2].every(v=>Number.isFinite(v)&&v>=0))throw Error('Data pertandingan tidak valid.');ids.add(m.id)}
+ for(const m of d.matches){if(m.nextMatchId&&!ids.has(m.nextMatchId))throw Error('Referensi pertandingan tidak valid.');if(d.format==='double')for(const src of [m.source1,m.source2])if(src&&!ids.has(sourceCode(src)))throw Error('Sumber bagan tidak ditemukan.');}
+ for(const m of d.matches){if(m.shot){const t=m.shot;for(const k of ['normal','first','breakTime','extension','quota','foulLimit','remaining','deadline'])if(!Number.isFinite(t[k])||t[k]<0||t[k]>(k==='deadline'?1e15:k==='remaining'?1e9:3600))throw Error('Pengaturan timer tidak valid.');for(const k of ['used','fouls','streak'])if(!Array.isArray(t[k])||t[k].length!==2||t[k].some(x=>!Number.isInteger(x)||x<0))throw Error('Counter timer tidak valid.');if(![0,1].includes(t.turn)||!['normal','first','break'].includes(t.mode)||typeof t.running!=='boolean')throw Error('Status timer tidak valid.');}}
+ const clean={...initial()};for(const key of Object.keys(clean))if(Object.prototype.hasOwnProperty.call(d,key))clean[key]=d[key];
+ // History from external files is not executed or trusted; start a fresh undo stack.
+ if(d.tournaments!==undefined){
+ if(!Array.isArray(d.tournaments)||d.tournaments.length>2000)throw Error('Riwayat turnamen tidak valid.');
+ const archiveIds=new Set();clean.tournaments=d.tournaments.map(a=>{if(!a||typeof a.id!=='string'||archiveIds.has(a.id)||typeof a.name!=='string'||typeof a.completedAt!=='string'||!Number.isFinite(Date.parse(a.completedAt))||!a.snapshot||!a.snapshot.champion)throw Error('Arsip turnamen tidak valid.');archiveIds.add(a.id);const snapshot=validateBackup({...a.snapshot,tournaments:[]});return {id:a.id,name:a.name,completedAt:a.completedAt,snapshot};});
+ }
+ return clean;
+}
+async function importBackup(file){
+ if(!file)return;try{if(file.size>10*1024*1024)throw Error('Maksimum ukuran backup 10 MB.');const next=validateBackup(JSON.parse(await file.text()));
+ if(!confirm('Pulihkan backup? Data aktif akan diganti. Sebaiknya ekspor data aktif terlebih dahulu.'))return;
+ data=next;save();tab=data.started?'bracket':'players';render();alert('Backup berhasil dipulihkan.');
+ }catch(error){alert('Backup tidak diimpor: '+error.message)}
+}
+function installUtilities(){
+ const header=document.querySelector('.header');if(!header)return;
+ const bar=document.createElement('div');bar.id='backupTools';bar.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center';
+ bar.innerHTML='<button class="btn" id="exportBackup" type="button">Ekspor Backup</button><button class="btn" id="importBackup" type="button">Impor Backup</button><input id="backupFile" type="file" accept=".json,application/json" hidden><span class="muted">v70 · Backup sebelum menutup atau mengganti file aplikasi.</span>';
+ header.insertAdjacentElement('afterend',bar);
+ document.getElementById('exportBackup').onclick=downloadBackup;
+
+ const input=document.getElementById('backupFile');document.getElementById('importBackup').onclick=()=>input.click();input.onchange=()=>{importBackup(input.files[0]);input.value=''};
+}
+installUtilities();
+
+
+function newTournamentId(){return globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():'t-'+Date.now()+'-'+Math.random().toString(36).slice(2)}
+function archiveCurrent(notify=true){
+ if(!data.started||!data.champion){if(notify)alert('Turnamen belum selesai. Progres aktif tetap tersimpan otomatis.');return false;}
+ if(!data.tournamentId)data.tournamentId=newTournamentId();
+ if(!data.completedAt)data.completedAt=new Date().toISOString();
+ if(!data.tournamentName)data.tournamentName='Turnamen '+new Date(data.completedAt).toLocaleDateString('id-ID');
+ const snapshot=JSON.parse(JSON.stringify({...data,tournaments:[],resultHistory:[]}));
+ const record={id:data.tournamentId,name:data.tournamentName,completedAt:data.completedAt,snapshot};
+ const previous=data.tournaments||[];data.tournaments=[record,...previous.filter(a=>a.id!==record.id)];
+ if(!save()){data.tournaments=previous;return false;}
+ if(notify)alert('Turnamen selesai disimpan ke Riwayat Turnamen.');return true;
+}
+function saveNamedTournament(){
+ if(!data.started){alert('Generate bagan terlebih dahulu.');return;}
+ const name=prompt('Nama turnamen:',data.tournamentName||'Turnamen '+new Date().toLocaleDateString('id-ID'));
+ if(name===null)return;if(!name.trim()){alert('Nama turnamen tidak boleh kosong.');return;}
+ data.tournamentName=name.trim().slice(0,150);if(!data.tournamentId)data.tournamentId=newTournamentId();
+ if(data.champion)archiveCurrent();else if(save())alert('Progres turnamen tersimpan. Setelah selesai, turnamen otomatis masuk riwayat.');render();
+}
+let selectedArchiveId='';
+function historyView(){
+ const records=[...(data.tournaments||[])].sort((a,b)=>Date.parse(b.completedAt)-Date.parse(a.completedAt));
+ const a=records.find(a=>a.id===selectedArchiveId);
+ if(a){const d=a.snapshot;return `<section class="card"><button class="btn secondary" id="backHistory">Kembali ke daftar</button><h2>${esc(a.name)}</h2><p class="muted">Selesai: ${esc(new Date(a.completedAt).toLocaleString('id-ID'))} · ${d.format==='double'?'Double':'Single'} Elimination · Arsip hanya-baca</p><h3>Juara: ${esc(d.champion)}</h3><p>Peserta: ${d.participants.filter(Boolean).map(esc).join(', ')}</p><div style="overflow:auto"><table style="width:100%;text-align:left;border-collapse:collapse"><thead><tr><th>Pertandingan</th><th>Pemain 1</th><th>Skor</th><th>Pemain 2</th><th>Race to</th><th>Pemenang</th></tr></thead><tbody>${d.matches.map(m=>`<tr><td style="padding:10px">${esc(m.section==='lower'&&d.matches.some(g=>g.code==='GF.1'&&sourceCode(g.source2)===m.code)?'Semi Final':m.code||m.label+' #'+(m.position+1))}</td><td>${esc(m.player1||'—')}</td><td>${m.bye?'BYE':esc(String(m.score1))+' : '+esc(String(m.score2))}</td><td>${esc(m.player2||'—')}</td><td>${matchRace(m)}</td><td>${esc(m.winner||'—')}</td></tr>`).join('')}</tbody></table></div></section>`;}
+ return `<section class="card"><h2>Riwayat Turnamen Selesai</h2><p class="muted">Turnamen otomatis diarsipkan setelah juara ditentukan. Riwayat tidak terhapus saat membuat turnamen baru dan ikut dalam Ekspor Backup.</p>${records.length?records.map((a,i)=>`<div class="card" style="margin:12px 0"><h3>${esc(a.name)}</h3><p>${esc(new Date(a.completedAt).toLocaleString('id-ID'))} · ${a.snapshot.format==='double'?'Double':'Single'} Elimination · ${a.snapshot.participants.filter(Boolean).length} peserta</p><p>Juara: <b>${esc(a.snapshot.champion)}</b></p><button class="btn primary archiveOpen" data-index="${i}">Lihat Hasil</button> <button class="btn secondary archiveRename" data-index="${i}">Ubah Nama</button> <button class="btn danger archiveDelete" data-index="${i}">Hapus Arsip</button></div>`).join(''):'<p>Belum ada turnamen selesai yang disimpan.</p>'}</section>`;
+}
+const originalRender=render;
+render=function(){
+ if(tab!=='history'){originalRender();return;}
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='history'));
+ document.getElementById('app').innerHTML=historyView();setupFixedBracketScrollbar();
+ const records=[...(data.tournaments||[])].sort((a,b)=>Date.parse(b.completedAt)-Date.parse(a.completedAt));
+ const back=document.getElementById('backHistory');if(back)back.onclick=()=>{selectedArchiveId='';render()};
+ document.querySelectorAll('.archiveOpen').forEach(b=>b.onclick=()=>{selectedArchiveId=records[+b.dataset.index].id;render()});
+ document.querySelectorAll('.archiveRename').forEach(b=>b.onclick=()=>{const a=records[+b.dataset.index];const name=prompt('Nama turnamen:',a.name);if(name&&name.trim()){a.name=name.trim().slice(0,150);a.snapshot.tournamentName=a.name;if(data.tournamentId===a.id)data.tournamentName=a.name;save();render()}});
+ document.querySelectorAll('.archiveDelete').forEach(b=>b.onclick=()=>{const a=records[+b.dataset.index];if(confirm('Hapus arsip "'+a.name+'"? Turnamen aktif tidak berubah.')){data.tournaments=data.tournaments.filter(x=>x.id!==a.id);save();render()}});
+};
+const originalFinish=finish;
+finish=function(id){originalFinish(id);if(data.champion)archiveCurrent(false)};
+const originalUndo=undoLastResult;
+undoLastResult=function(){const id=data.tournamentId;const before=(data.resultHistory||[]).length;originalUndo();if((data.resultHistory||[]).length<before){data.tournaments=(data.tournaments||[]).filter(a=>a.id!==id);data.completedAt='';if(data.champion)archiveCurrent(false);else save();}};
+const saveButton=document.createElement('button');saveButton.className='btn primary';saveButton.id='saveTournament';saveButton.textContent='Simpan Turnamen';saveButton.onclick=saveNamedTournament;document.getElementById('backupTools').prepend(saveButton);
+// Migrate an already-completed active tournament on first opening v63.
+if(data.champion)archiveCurrent(false);
+
+// v64: per-match operator console. No automatic foul penalties or race changes.
+let controlMatchId='',shotAudio=null;
+function availableControlMatches(){return data.matches.filter(m=>m.player1&&m.player2&&!m.bye)}
+function selectedControlMatch(){const all=availableControlMatches();return all.find(m=>m.id===controlMatchId)||all.find(m=>!m.completed)||all[0]}
+function shotState(m){
+ if(!m.shot)m.shot={normal:30,first:30,breakTime:60,extension:15,quota:3,foulLimit:5,used:[0,0],fouls:[0,0],streak:[0,0],turn:0,mode:'normal',remaining:30000,running:false,deadline:0,sound:true};
+ return m.shot;
+}
+function shotRemaining(t){return t.running?Math.max(0,t.deadline-Date.now()):Math.max(0,t.remaining)}
+function shotDuration(t){return (t.mode==='break'?t.breakTime:t.mode==='first'?t.first:t.normal)*1000}
+function shotBeep(){try{if(!shotAudio)return;const o=shotAudio.createOscillator(),g=shotAudio.createGain();o.connect(g);g.connect(shotAudio.destination);o.frequency.value=880;g.gain.value=.12;o.start();o.stop(shotAudio.currentTime+.35)}catch(e){console.warn(e)}}
+function activateShotAudio(){try{const A=window.AudioContext||window.webkitAudioContext;if(A&&!shotAudio)shotAudio=new A();if(shotAudio&&shotAudio.state==='suspended')shotAudio.resume()}catch(e){}}
+function shotPause(t){t.remaining=shotRemaining(t);t.running=false;t.deadline=0}
+function shotReset(t,run=false){t.remaining=shotDuration(t);t.running=run;t.deadline=run?Date.now()+t.remaining:0;t.lastWarning=null}
+function shotSide(m,t,i){const name=i?m.player2:m.player1;return `<section class="shotPanel ${t.turn===i?'activeTurn':''}"><div class="muted">PEMAIN ${i?'B':'A'}</div><h2>${esc(name)}</h2><div class="shotScore">${m['score'+(i+1)]}</div><div class="shotActions"><button class="btn primary" data-shot="scorePlus" data-side="${i}">+1 SKOR</button><button class="btn secondary" data-shot="scoreMinus" data-side="${i}">−1 SKOR</button></div><button class="btn secondary" data-shot="resetScore" data-side="${i}">Reset Skor</button><hr><div class="muted">EXTENSION TERPAKAI</div><div class="shotCounter">${t.used[i]} / ${t.quota}</div><p>${t.extension} detik per extension</p><button class="btn shotYellow" data-shot="extension" data-side="${i}" ${t.used[i]>=t.quota||t.turn!==i?'disabled':''}>+${t.extension} DETIK</button><div class="shotActions"><button class="btn secondary" data-shot="undoExtension" data-side="${i}" ${!t.used[i]?'disabled':''}>Koreksi Kuota −1</button><button class="btn secondary" data-shot="resetQuota" data-side="${i}">Reset Kuota</button></div><hr><div class="muted">FOUL RACK</div><div class="shotCounter">${t.fouls[i]} / ${t.foulLimit}</div><p>${t.streak[i]} foul berturut-turut ${t.streak[i]>=3?' · PERINGATAN 3 FOUL':''}</p><div class="shotActions"><button class="btn shotPink" data-shot="foul" data-side="${i}">+ FOUL</button><button class="btn secondary" data-shot="clearShot" data-side="${i}">CLEAR SHOT</button></div><div class="shotActions"><button class="btn secondary" data-shot="undoFoul" data-side="${i}">Koreksi Foul −1</button><button class="btn secondary" data-shot="resetFoul" data-side="${i}">Reset Foul Rack</button></div>${t.fouls[i]>=t.foulLimit?'<p class="shotNotice">Batas foul tercapai. Keputusan tetap pada operator.</p>':''}</section>`}
+function controlView(){
+ const all=availableControlMatches(),m=selectedControlMatch();if(!m)return '<section class="card"><h2>Kontrol Match</h2><p>Generate bagan dan tunggu hingga kedua pemain pertandingan tersedia.</p></section>';
+ controlMatchId=m.id;const t=shotState(m);
+ return `<section class="card" id="shotConsole"><div class="shotTop"><h2>Kontrol Match</h2><select class="select" id="controlMatchSelect">${all.map(x=>`<option value="${esc(x.id)}" ${x.id===m.id?'selected':''}>${esc(x.code||x.label+' #'+(x.position+1))} · ${esc(x.player1)} vs ${esc(x.player2)}${x.completed?' (Selesai)':''}</option>`).join('')}</select><button class="btn secondary" id="shotFullscreen">Layar Penuh</button></div><p class="muted">Skor tersinkron ke bagan · Race to ${matchRace(m)} · Extension dan foul diatur operator, tanpa penalti otomatis.</p>${m.completed?'<div class="shotNotice">Match selesai. Kontrol dikunci. Gunakan Batal Hasil untuk membuka kembali pertandingan ini.</div>':''}<div class="shotBoard">${shotSide(m,t,0)}<section class="shotPanel shotCenter"><h2>BILLIARD SHOT TIMER</h2><div class="shotScore">${m.score1} : ${m.score2}</div><div class="shotActions"><button class="btn ${t.turn===0?'shotYellow':'secondary'}" data-shot="turn" data-side="0">GILIRAN A</button><button class="btn ${t.turn===1?'shotYellow':'secondary'}" data-shot="turn" data-side="1">GILIRAN B</button></div><div class="muted">MODE: ${t.mode==='break'?'BREAK':t.mode==='first'?'PUKULAN 1':'NORMAL'}</div><div id="shotClock" class="shotClock">${Math.ceil(shotRemaining(t)/1000)}</div><div id="shotStatus" class="muted">${t.running?'BERJALAN':'DIJEDA'}</div><div class="shotSettings">${[['normal','Normal',t.normal],['first','Pukulan 1',t.first],['breakTime','Break',t.breakTime],['extension','Extension',t.extension],['quota','Kuota extension',t.quota],['foulLimit','Batas foul',t.foulLimit]].map(([k,l,v])=>`<label>${l}<input class="input shotSetting" type="number" data-setting="${k}" value="${v}" min="${k==='quota'?0:1}" max="${k==='quota'||k==='foulLimit'?99:3600}"></label>`).join('')}</div><div class="shotActions"><button class="btn secondary" data-shot="modeNormal">Normal</button><button class="btn secondary" data-shot="modeFirst">Pukulan 1</button><button class="btn shotYellow" data-shot="modeBreak">Mulai Break</button></div><div class="shotActions"><button class="btn primary" data-shot="start">START</button><button class="btn secondary" data-shot="pause">PAUSE</button><button class="btn secondary" data-shot="reset">RESET</button></div><button class="btn shotYellow" style="width:100%" data-shot="restart">RESTART TIMER</button><div class="shotActions"><button class="btn secondary" data-shot="newRack">Rack Baru</button><button class="btn secondary" data-shot="sound">Suara: ${t.sound?'ON':'OFF'}</button></div><p class="muted">Ganti giliran mereset timer normal dan mempertahankan status jalan/jeda. Rack Baru mereset foul, bukan kuota extension.</p><button class="btn primary" id="finishControlledMatch" ${m.completed||Math.max(m.score1,m.score2)!==matchRace(m)||m.score1===m.score2?'disabled':''}>Selesai Match</button></section>${shotSide(m,t,1)}</div></section>`;
+}
+function bindControl(){
+ const m=selectedControlMatch();if(!m)return;const t=shotState(m);
+ document.getElementById('controlMatchSelect').onchange=e=>{shotPause(t);save();controlMatchId=e.target.value;render()};
+ document.getElementById('shotFullscreen').onclick=()=>{const el=document.getElementById('app');if(document.fullscreenElement)document.exitFullscreen();else if(el.requestFullscreen)el.requestFullscreen().catch(()=>{})};
+ document.getElementById('finishControlledMatch').onclick=()=>{if(confirm('Selesaikan match dan teruskan pemenang ke bagan?')){shotPause(t);finish(m.id);render()}};
+ document.querySelectorAll('.shotSetting').forEach(input=>{input.disabled=m.completed;input.onchange=()=>{const key=input.dataset.setting,min=key==='quota'?0:1,max=key==='quota'||key==='foulLimit'?99:3600;t[key]=Math.max(min,Math.min(max,Math.floor(Number(input.value)||min)));save();render()}});
+ document.querySelectorAll('[data-shot]').forEach(button=>{if(m.completed)button.disabled=true;button.onclick=()=>{
+  if(m.completed)return;activateShotAudio();const action=button.dataset.shot,i=Number(button.dataset.side)||0,score='score'+(i+1);
+  if(action==='scorePlus')m[score]=Math.min(matchRace(m),m[score]+1);
+  if(action==='scoreMinus')m[score]=Math.max(0,m[score]-1);
+  if(action==='resetScore'&&confirm('Reset skor pemain ini ke 0?'))m[score]=0;
+  if(action==='start'){if(shotRemaining(t)<=0)shotReset(t);t.remaining=shotRemaining(t);t.deadline=Date.now()+t.remaining;t.running=true;}
+  if(action==='pause')shotPause(t);
+  if(action==='reset')shotReset(t);
+  if(action==='restart')shotReset(t,true);
+  if(action==='turn'){const running=t.running;t.turn=i;t.mode='normal';shotReset(t,running)}
+  if(action.startsWith('mode')){t.mode=action==='modeBreak'?'break':action==='modeFirst'?'first':'normal';shotReset(t,action==='modeBreak')}
+  if(action==='extension'&&i===t.turn&&t.used[i]<t.quota){t.remaining=shotRemaining(t)+t.extension*1000;if(t.running)t.deadline=Date.now()+t.remaining;t.used[i]++;t.lastWarning=null;}
+  if(action==='undoExtension'&&t.used[i]>0){t.used[i]--;}
+  if(action==='resetQuota'&&confirm('Reset kuota extension pemain ini?'))t.used[i]=0;
+  if(action==='foul'){t.fouls[i]++;t.streak[i]++;}
+  if(action==='clearShot')t.streak[i]=0;
+  if(action==='undoFoul'){t.fouls[i]=Math.max(0,t.fouls[i]-1);t.streak[i]=Math.max(0,t.streak[i]-1)}
+  if(action==='resetFoul'&&confirm('Reset foul rack pemain ini?')){t.fouls[i]=0;t.streak[i]=0;}
+  if(action==='newRack'&&confirm('Mulai rack baru? Foul kedua pemain direset; skor dan kuota extension tetap.')){t.fouls=[0,0];t.streak=[0,0];t.mode='first';shotReset(t)}
+  if(action==='sound')t.sound=!t.sound;
+  save();render();
+ }});
+}
+const finishBeforeControl=finish;finish=function(id){const m=data.matches.find(x=>x.id===id);if(m&&m.shot&&Math.max(m.score1,m.score2)===matchRace(m)&&m.score1!==m.score2)shotPause(m.shot);finishBeforeControl(id)};
+const renderBeforeControl=render;
+render=function(){if(tab!=='control'){renderBeforeControl();return;}document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='control'));document.getElementById('app').innerHTML=controlView();setupFixedBracketScrollbar();bindControl();};
+setInterval(()=>{
+ // Deadline-based countdown remains accurate when rendering or switching tabs.
+ let expired=false;for(const m of data.matches){const t=m.shot;if(!t||!t.running)continue;const seconds=Math.ceil(shotRemaining(t)/1000);if(seconds<=0){t.remaining=0;t.running=false;t.deadline=0;expired=true;if(t.sound)shotBeep();}else if(tab==='control'&&m.id===controlMatchId&&seconds<=5&&t.lastWarning!==seconds){t.lastWarning=seconds;if(t.sound)shotBeep();}}
+ if(expired)save();if(tab!=='control')return;const m=selectedControlMatch();if(!m)return;const t=shotState(m),seconds=Math.ceil(shotRemaining(t)/1000),el=document.getElementById('shotClock');if(el){el.textContent=seconds;el.classList.toggle('warning',seconds<=5);const status=document.getElementById('shotStatus');if(status)status.textContent=seconds===0?'WAKTU HABIS':t.running?'BERJALAN':'DIJEDA';}
+},100);
+
+
+// v65: complete, vector bracket print preview. No network dependencies.
+function bracketPdfDocument(){
+ const ms=data.matches;if(!ms.length)throw Error('Generate bagan terlebih dahulu.');
+ const W=246,H=78,DX=276,DY=94,nodes=new Map();
+ const add=(m,x,y)=>nodes.set(m.id,{m,x,y});
+ if(data.format==='double'){
+  const upper=ms.filter(m=>m.section==='upper').sort((a,b)=>a.round-b.round||a.position-b.position);
+  for(const m of upper){const src=[m.source1,m.source2].map(t=>nodes.get(sourceCode(t||''))).filter(Boolean);add(m,24+(m.round-1)*DX,src.length?src.reduce((v,n)=>v+n.y,0)/src.length:48+m.position*DY);}
+  const lowerTop=Math.max(...[...nodes.values()].map(n=>n.y+H))+48;
+  const lower=ms.filter(m=>m.section==='lower').sort((a,b)=>a.round-b.round||a.position-b.position);
+  for(const m of lower){const src=[m.source1,m.source2].map(t=>nodes.get(sourceCode(t||''))).filter(n=>n&&n.m.section==='lower');add(m,24+(m.round-1)*DX,src.length?src.reduce((v,n)=>v+n.y,0)/src.length:lowerTop+m.position*DY);}
+  const gf=ms.find(m=>m.code==='GF.1');if(gf){const u=nodes.get(sourceCode(gf.source1));add(gf,24+Math.max(...ms.filter(m=>m.section!=='final').map(m=>m.round))*DX,u?u.y:48);}
+ }else{
+  for(const m of [...ms].sort((a,b)=>a.round-b.round||a.position-b.position)){const src=ms.filter(x=>x.nextMatchId===m.id).map(x=>nodes.get(x.id)).filter(Boolean);add(m,24+(m.round-1)*DX,src.length?src.reduce((v,n)=>v+n.y,0)/src.length:48+m.position*DY);}
+ }
+ const width=Math.max(...[...nodes.values()].map(n=>n.x+W))+24,height=Math.max(...[...nodes.values()].map(n=>n.y+H))+16;
+ const xml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+ const short=v=>{const a=Array.from(String(v));return a.length>28?a.slice(0,27).join('')+'…':v};
+ let paths='',cards='',headings='';const cols=new Set();
+ const line=(a,b)=>{const x1=a.x+W,y1=a.y+H/2,x2=b.x,y2=b.y+H/2,mid=(x1+x2)/2;const lower=a.m.section==='lower'||b.m.section==='lower';paths+=`<path d="M${x1} ${y1} H${mid} V${y2} H${x2}" fill="none" stroke="${lower?'#b97860':'#64748b'}" stroke-width="1.6"/>`;};
+ for(const n of nodes.values()){
+  const m=n.m;if(data.format==='double'){for(const t of [m.source1,m.source2]){const a=nodes.get(sourceCode(t||''));if(a&&!(a.m.section==='upper'&&m.section==='lower'))line(a,n)}}else if(m.nextMatchId&&nodes.has(m.nextMatchId))line(n,nodes.get(m.nextMatchId));
+  const key=(m.section||'single')+'-'+m.round;if(!cols.has(key)){cols.add(key);const title=m.section==='final'?'Grand Final':m.section==='lower'?'Lower R'+m.round:m.section==='upper'?'Upper R'+m.round:m.label;const y=m.section==='lower'?Math.min(...[...nodes.values()].filter(a=>a.m.section==='lower').map(a=>a.y))-20:28;headings+=`<text x="${n.x}" y="${y}" font-size="14" font-weight="700" fill="#334155">${xml(title)}</text>`;}
+  const semi=m.section==='lower'&&ms.some(g=>g.code==='GF.1'&&sourceCode(g.source2)===m.code);
+  const title=semi?'Semi Final':m.code||m.label+' '+(m.position+1);
+  cards+=`<g transform="translate(${n.x} ${n.y})"><rect width="${W}" height="${H}" rx="8" fill="#fff" stroke="${m.section==='final'?'#b88b20':'#94a3b8'}" stroke-width="1.4"/><text x="10" y="19" font-size="11" font-weight="700" fill="#334155">${xml(title)}</text><text x="${W-10}" y="19" text-anchor="end" font-size="10" fill="#475569">Race to ${matchRace(m)}</text>`;
+  const ru=rule(m);
+  for(let i=1;i<=2;i++){const name=m['player'+i];const source=m['source'+i];const handicap=ru&&ru.gap&&ru.low.name===name?' (-'+ru.gap+')':'';const text=name?name+handicap:source||'Menunggu pemain';const y=23+(i-1)*25;cards+=`<rect x="7" y="${y}" width="${W-14}" height="23" rx="4" fill="${m.winner&&m.winner===name?'#dcfce7':'#f1f5f9'}"/><text x="13" y="${y+16}" font-size="11" fill="#0f172a"><title>${xml(text)}</title>${xml(short(text))}</text><text x="${W-14}" y="${y+16}" text-anchor="end" font-size="13" font-weight="700" fill="#0f172a">${name?xml(m['score'+i]):''}</text>`;}
+  cards+=`</g>`;
+ }
+ const title=data.tournamentName||'Bagan Turnamen Biliar';
+ return `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${xml(title)}</title><style id="paperStyle"></style><style>*{box-sizing:border-box}body{margin:0;background:#e2e8f0;color:#0f172a;font-family:Arial,sans-serif}.tools{padding:14px;background:#0f172a;color:white;position:sticky;top:0;z-index:5}.tools button,.tools select{padding:9px;margin-right:10px}.sheet{background:white;margin:18px auto;overflow:hidden;position:relative}.content{position:absolute;left:0;top:0;transform-origin:top left;padding:16px}h1{font-size:22px;margin:0 0 8px}.meta{font-size:12px;margin-bottom:12px;color:#475569}svg{display:block} @media print{body{background:white}.tools{display:none}.sheet{margin:0;break-inside:avoid}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="tools"><button id="printPdf">Cetak / Simpan PDF</button><select id="paper"><option>A3</option><option>A2</option><option>A4</option></select><span>Pilih Save as PDF, landscape, skala 100%, nonaktifkan header/footer. Bagan besar: pilih A2.</span></div><main class="sheet"><div class="content"><h1>${xml(title)}</h1><div class="meta">${data.format==='double'?'Double':'Single'} Elimination | ${participantNames().length} peserta | ${xml(new Date().toLocaleString('id-ID'))}${data.champion?' | Juara: '+xml(data.champion):''}</div><svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bagan turnamen lengkap">${paths}${headings}${cards}</svg></div></main><script>function fit(){const size={A4:[297,210],A3:[420,297],A2:[594,420]}[document.getElementById('paper').value],px=96/25.4,w=(size[0]-16)*px,h=(size[1]-16)*px;document.getElementById('paperStyle').textContent='@page{size:'+size[0]+'mm '+size[1]+'mm;margin:8mm}';const sheet=document.querySelector('.sheet'),c=document.querySelector('.content');sheet.style.width=w+'px';sheet.style.height=(h-2)+'px';c.style.width='${width+32}px';c.style.transform='scale('+Math.min(w/(${width}+32),(h-2)/c.scrollHeight)+')'}document.getElementById('paper').onchange=fit;document.getElementById('printPdf').onclick=()=>{fit();window.print()};window.addEventListener('beforeprint',fit);fit();<\/script></body></html>`;
+}
+function exportBracketPdf(){if(!data.matches.length){alert('Generate bagan terlebih dahulu.');return;}const win=window.open('','_blank');if(!win){alert('Izinkan pop-up untuk membuka pratinjau PDF.');return;}try{win.document.open();win.document.write(bracketPdfDocument());win.document.close();}catch(error){win.close();alert('Ekspor gagal: '+error.message)}}
+const renderBeforePdf=render;
+render=function(){renderBeforePdf();if(tab==='bracket'&&data.matches.length){const bar=document.querySelector('#app .toolbar');if(bar&&!document.getElementById('exportBracketPdf')){const b=document.createElement('button');b.className='btn primary';b.id='exportBracketPdf';b.textContent='Ekspor PDF Bagan';b.onclick=exportBracketPdf;bar.appendChild(b)}}};
+
+
+function cancelCardButton(m){return m.completed&&!m.bye&&m.player1&&m.player2?`<button type="button" class="cancelMatchResult" data-id="${esc(m.id)}" title="Batalkan hasil pertandingan" aria-label="Batalkan hasil pertandingan" style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;min-width:0;min-height:0;padding:0;margin:0;border:0;border-radius:0;background:transparent;color:#87909c;box-shadow:none;font-size:12px;font-weight:400;line-height:1;cursor:pointer">x</button>`:'';}
+function inlineCancelResult(html,m){const button=cancelCardButton(m);if(!button)return html;const winner='Pemenang: '+esc(m.winner);const row='<div style="color:var(--green);font-weight:800">'+winner+'</div>';return html.replace(row,'<div style="color:var(--green);font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="min-width:0;overflow-wrap:anywhere">'+winner+'</span>'+button+'</div>');}
+const cardBeforeCancel=doubleMatchCard;
+doubleMatchCard=function(m){return inlineCancelResult(cardBeforeCancel(m),m)};
+const singleCardBeforeCancel=matchCard;
+matchCard=function(m,...args){return inlineCancelResult(singleCardBeforeCancel(m,...args),m)};
+function dependentMatchIds(id){
+ const affected=new Set([id]);let changed=true;
+ while(changed){changed=false;for(const m of data.matches){if(affected.has(m.id))continue;
+ const depends=data.format==='double'?[m.source1,m.source2].some(t=>t&&affected.has(sourceCode(t))):data.matches.some(x=>affected.has(x.id)&&x.nextMatchId===m.id);
+ if(depends){affected.add(m.id);changed=true;}}}return affected;
+}
+function cancelMatchResult(id){
+ const target=data.matches.find(m=>m.id===id);if(!target||!target.completed||target.bye)return;
+ const affected=dependentMatchIds(id),following=data.matches.filter(m=>m.id!==id&&affected.has(m.id));
+ const played=following.filter(m=>m.completed&&!m.bye).length;
+ if(!confirm('Batalkan hasil '+(target.code||target.label)+'? Skor pertandingan ini akan direset ke 0.\n'+following.length+' pertandingan lanjutan bergantung pada hasil ini'+(played?' ('+played+' sudah selesai)':'')+' dan akan direset.\nPertandingan lain dan Race to tetap dipertahankan.'))return;
+ rememberBracketScroll();
+ for(const m of data.matches){if(!affected.has(m.id))continue;
+ m.score1=0;m.score2=0;m.winner='';m.loser='';m.completed=false;delete m.bye;
+ if(m.shot){shotPause(m.shot);m.shot.used=[0,0];m.shot.fouls=[0,0];m.shot.streak=[0,0];m.shot.mode='normal';shotReset(m.shot);}
+ if(m.id!==id){if(data.format==='double'){if(m.source1)m.player1='';if(m.source2)m.player2='';}else{m.player1='';m.player2='';}}
+ }
+ if(data.format==='double')propagateDouble(data.matches);
+ else{
+  for(const m of data.matches){if(m.completed&&m.nextMatchId){const next=data.matches.find(x=>x.id===m.nextMatchId);if(next&&affected.has(next.id))next[m.nextSlot]=m.winner;}}
+  processSingleByes(data.matches);
+ }
+ const final=data.matches.find(m=>data.format==='double'?m.code==='GF.1':!m.nextMatchId);
+ data.champion=final&&final.completed?final.winner:'';
+ data.completedAt='';data.resultHistory=[];
+ data.tournaments=(data.tournaments||[]).filter(a=>a.id!==data.tournamentId);
+ save();render();
+}
+const renderBeforeCancel=render;
+render=function(){renderBeforeCancel();document.querySelectorAll('.cancelMatchResult').forEach(b=>b.onclick=()=>cancelMatchResult(b.dataset.id));if(tab==='control'){const m=selectedControlMatch(),panel=document.querySelector('.shotCenter');if(m&&panel&&cancelCardButton(m)){panel.insertAdjacentHTML('beforeend',cancelCardButton(m));panel.querySelector('.cancelMatchResult').onclick=()=>cancelMatchResult(m.id);}}};
+
+const mainTabs=document.getElementById('mainTabs');
+
+mainTabs.addEventListener('click',event=>{
+ const button=event.target.closest('.tab');
+ if(!button||!mainTabs.contains(button))return;
+ event.preventDefault();
+ tab=button.dataset.tab;
+ render();
+});
+window.addEventListener('resize',scheduleDynamicBracket);document.getElementById('newTournament').onclick=()=>{if(confirm('Mulai turnamen baru? Database pemain tetap disimpan.')){if(data.champion&&!archiveCurrent(false))return;data={...initial(),players:data.players,tournaments:data.tournaments||[]};save();tab='players';render()}};render();
+</script>
+<script>
+/* v79: skala lewat variabel CSS agar tidak berkedip saat panel digambar ulang */
+(function(){
+  function appEl(){return document.getElementById('app');}
+  function isFs(){var a=appEl();return !!(document.fullscreenElement||document.webkitFullscreenElement||(a&&a.classList.contains('fs')));}
+  function measure(){
+    var a=appEl();
+    if(!a)return;
+    if(!isFs()){a.style.removeProperty('--fsfit');return;}
+    var el=document.getElementById('shotConsole');
+    if(!el)return;
+    var need=el.scrollHeight, have=el.clientHeight;
+    var k=(need>have+2&&need>0)?Math.max(.55,have/need):1;
+    var cur=parseFloat(a.style.getPropertyValue('--fsfit')||'1');
+    if(Math.abs(cur-k)>0.002){a.style.setProperty('--fsfit',k.toFixed(4));}
+  }
+  window.__fitShot=measure;
+  document.addEventListener('fullscreenchange',function(){requestAnimationFrame(measure);});
+  document.addEventListener('webkitfullscreenchange',function(){requestAnimationFrame(measure);});
+  window.addEventListener('resize',function(){requestAnimationFrame(measure);});
+  var a=document.getElementById('app');
+  if(a){new MutationObserver(function(){requestAnimationFrame(measure);}).observe(a,{childList:true,subtree:true});}
+  requestAnimationFrame(measure);
+})();
+</script></body>
+</html>
+
+<style>.flowCol::before,.flowCol::after,.flowCol .match::before{display:none!important}</style>
