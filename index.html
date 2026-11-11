@@ -107,6 +107,572 @@
 
 
 
+<!-- ===== Tampilan baru (sidebar + penyegaran visual) ===== -->
+<style>
+/* =====================================================================
+ * Tampilan baru: sidebar + penyegaran visual
+ * Dimuat setelah CSS aplikasi, jadi aturan di sini menimpanya.
+ * ===================================================================== */
+
+:root {
+  --nav-w: 268px;
+  --ui-bg: #060a11;
+  --ui-surface: #0d1522;
+  --ui-surface-2: #111c2c;
+  --ui-line: #1e2c42;
+  --ui-line-soft: #17222f;
+  --ui-text: #e7eef8;
+  --ui-muted: #8fa2bd;
+  --ui-accent: #34d399;
+  --ui-accent-ink: #04241b;
+  --ui-accent-soft: rgba(52, 211, 153, 0.12);
+  --ui-danger: #f87171;
+  --ui-radius: 14px;
+  --ui-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+html {
+  background: var(--ui-bg);
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 78% -10%, rgba(52, 211, 153, 0.07), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(56, 130, 246, 0.06), transparent 55%),
+    var(--ui-bg);
+  color: var(--ui-text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Chrome lama disembunyikan; tetap ada di DOM agar handler aplikasi bekerja. */
+.header,
+.tabs {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- sidebar */
+.nav {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--nav-w);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 18px 18px;
+  background: linear-gradient(180deg, #0b131f 0%, #080d16 100%);
+  border-right: 1px solid var(--ui-line);
+  z-index: 60;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 4px 0;
+}
+
+.nav-logo {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #34d399, #0f9d6b);
+  color: #04241b;
+  font-size: 20px;
+  box-shadow: 0 8px 18px rgba(52, 211, 153, 0.25);
+}
+
+.nav-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  padding-top: 1px;
+}
+
+.nav-sub {
+  font-size: 12px;
+  color: var(--ui-muted);
+  margin-top: 2px;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5d7091;
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #c3d0e2;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.nav-item:hover {
+  background: #101b2b;
+  color: #eaf2ff;
+}
+
+.nav-item.is-active {
+  background: var(--ui-accent-soft);
+  border-color: rgba(52, 211, 153, 0.32);
+  color: #7ff0c6;
+}
+
+.nav-item.is-active svg {
+  opacity: 1;
+}
+
+.nav-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-line-soft);
+}
+
+.nav-new {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 11px;
+  border: 1px solid rgba(52, 211, 153, 0.34);
+  background: rgba(52, 211, 153, 0.1);
+  color: #7ff0c6;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-new:hover {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: rgba(52, 211, 153, 0.55);
+  color: #b6fbe2;
+}
+
+/* Kontrol sinkronisasi dipindahkan ke dalam sidebar. */
+.nav-foot #syncChip {
+  position: static !important;
+  width: 100%;
+  justify-content: center;
+  padding: 10px 12px !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  right: auto !important;
+  bottom: auto !important;
+  background: #101b2b !important;
+  border: 1px solid #26364d !important;
+  color: #cfdcee !important;
+  cursor: pointer;
+}
+
+.nav-foot #syncChip:hover {
+  background: #16243a !important;
+  border-color: #36506f !important;
+}
+
+.nav-foot #syncChip.op {
+  background: linear-gradient(160deg, #34d399, #0f9d6b) !important;
+  color: #04241b !important;
+  border-color: transparent !important;
+}
+
+.nav-foot #syncStatus {
+  position: static !important;
+  left: auto !important;
+  bottom: auto !important;
+  max-width: none !important;
+  width: 100%;
+  font-size: 11.5px !important;
+  line-height: 1.45 !important;
+  padding: 8px 10px !important;
+  border-radius: 9px !important;
+  background: #0b1727 !important;
+  color: #93a7c4 !important;
+  text-align: center;
+}
+
+.nav-foot #syncStatus.bad {
+  background: rgba(185, 28, 28, 0.18) !important;
+  color: #fca5a5 !important;
+}
+
+/* ---------------------------------------------------------------- konten */
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  margin-left: var(--nav-w);
+  padding: 34px clamp(18px, 3vw, 40px) 64px;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--ui-line-soft);
+}
+
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ui-accent);
+}
+
+.page-title {
+  margin: 6px 0 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.page-meta {
+  font-size: 13px;
+  color: var(--ui-muted);
+  text-align: right;
+}
+
+/* ------------------------------------------------------------ komponen UI */
+.card {
+  background: linear-gradient(180deg, #0f1929 0%, #0c1421 100%);
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-radius);
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.card h2 {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+.btn.primary {
+  background: linear-gradient(165deg, #3fe0a6, #22c58b);
+  color: #04241b;
+  box-shadow: 0 6px 16px rgba(52, 211, 153, 0.22);
+}
+
+.btn.primary:hover {
+  background: linear-gradient(165deg, #4ae9b2, #29d296);
+}
+
+.btn.secondary {
+  background: #101b2b;
+  border-color: #26364d;
+  color: #cfdcee;
+}
+
+.btn.secondary:hover {
+  background: #152441;
+  border-color: #36506f;
+  color: #fff;
+}
+
+.btn.danger {
+  background: #1c1218;
+  border-color: #4a2230;
+  color: #f4a3b3;
+}
+
+.btn.danger:hover {
+  background: #2a1620;
+  border-color: #6b2b3d;
+  color: #ffd0d9;
+}
+
+/* Banyak tombol di aplikasi ini hanya memakai .btn tanpa varian, sehingga
+   tampil putih bawaan browser. Beri gaya sekunder sebagai default. */
+.btn:not(.primary):not(.danger):not(.shotYellow):not(.shotPink):not(.ghost) {
+  background: #101b2b;
+  border-color: #26364d;
+  color: #cfdcee;
+}
+
+.btn:not(.primary):not(.danger):not(.shotYellow):not(.shotPink):not(.ghost):hover {
+  background: #152441;
+  border-color: #36506f;
+  color: #ffffff;
+}
+
+.input,
+.select {
+  background: #0a1220;
+  border: 1px solid #223148;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ui-text);
+  font-size: 13.5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14);
+}
+
+.grid {
+  gap: 16px;
+}
+
+.tier {
+  background: #0b1420;
+  border: 1px solid var(--ui-line-soft);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.player {
+  background: #0c1624;
+  border: 1px solid #1b2638;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.player:hover {
+  background: #0f1b2c;
+  border-color: #26374f;
+}
+
+.badge {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  color: #7ff0c6;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 3px 9px;
+}
+
+.muted {
+  color: var(--ui-muted);
+}
+
+.toolbar,
+.actions {
+  border-radius: 12px;
+}
+
+.actions {
+  background: #0a1220;
+  border: 1px solid var(--ui-line-soft);
+}
+
+.notice {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  color: #fcd79a;
+  border-radius: 10px;
+}
+
+/* ------------------------------------------------------------------ mobile */
+.nav-toggle {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 70;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  border: 1px solid #26364d;
+  background: #0d1725;
+  color: #d6e3f4;
+  cursor: pointer;
+  box-shadow: var(--ui-shadow);
+}
+
+.nav-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 12, 0.62);
+  backdrop-filter: blur(2px);
+  z-index: 55;
+}
+
+@media (max-width: 960px) {
+  .nav {
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    width: min(82vw, 300px);
+    box-shadow: var(--ui-shadow);
+  }
+
+  body.nav-open .nav {
+    transform: translateX(0);
+  }
+
+  body.nav-open .nav-backdrop {
+    display: block;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .wrap {
+    margin-left: 0;
+    padding: 70px 16px 48px;
+  }
+
+  .page-head {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+  }
+
+  .page-meta {
+    text-align: left;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cegah halaman melebar: baris tombol dilipat, teks boleh turun baris. */
+  .row,
+  .toolbar,
+  .actions {
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    white-space: normal;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .input,
+  .select {
+    min-width: 0;
+  }
+
+  #app {
+    overflow-x: hidden;
+  }
+}
+
+/* Saat bagan/mode kontrol masuk layar penuh, sidebar menyingkir. */
+body.ui-fullscreen .nav,
+body.ui-fullscreen .nav-toggle,
+body.ui-fullscreen .nav-backdrop {
+  display: none !important;
+}
+
+body.ui-fullscreen .wrap {
+  margin-left: 0;
+  max-width: none;
+  padding: 0;
+}
+</style>
 </head>
 <body>
 <div id="saved" class="saved">Tersimpan</div>
@@ -826,11 +1392,20 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
   }
 
   /**
-   * Sebuah baris yang baru dibuat berisi `{}`. Itu bukan data turnamen, jadi
+   * Sebuah baris baru berisi `{}`, dan pemuatan pertama yang belum diisi
+   * menghasilkan state awal tanpa isi. Keduanya bukan data turnamen, jadi
    * tidak boleh dipakai menimpa data lokal yang sudah tersusun.
    */
   function isEmptyPayload(payload) {
-    return !payload || typeof payload !== 'object' || Object.keys(payload).length === 0
+    if (!payload || typeof payload !== 'object') return true
+    if (Object.keys(payload).length === 0) return true
+    var players = Array.isArray(payload.players) ? payload.players.length : 0
+    var matches = Array.isArray(payload.matches) ? payload.matches.length : 0
+    var tournaments = Array.isArray(payload.tournaments) ? payload.tournaments.length : 0
+    if (players > 0 || matches > 0 || tournaments > 0) return false
+    if (payload.champion) return false
+    var name = typeof payload.tournamentName === 'string' ? payload.tournamentName.trim() : ''
+    return name.length === 0
   }
 
   function stamp(iso) {    if (!iso) return '—'
@@ -1024,7 +1599,7 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
     pull()
       .then(function (row) {
         if (!row || isEmptyPayload(row.payload)) {
-          paint('Belum ada data. Aktifkan Mode Operator lalu ubah skor sekali.')
+          paint()
           return
         }
         applyRemote(row)
@@ -1079,7 +1654,7 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
     .then(function (row) {
       if (row && !isEmptyPayload(row.payload)) applyRemote(row)
       else if (role === 'operator') push()
-      else paint('Belum ada data. Aktifkan Mode Operator di perangkat pengatur.')
+      else paint()
     })
     .catch(function () {
       paint('Tidak bisa menghubungi Supabase — memakai data lokal.')
@@ -1089,6 +1664,211 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
   window.addEventListener('beforeunload', function () {
     clearInterval(pollTimer)
   })
+})()
+</script>
+<!-- ===== Shell tampilan ===== -->
+<script>
+/* =====================================================================
+ * Shell tampilan: sidebar navigasi, judul halaman, dan penyesuaian seluler.
+ * Dijalankan setelah aplikasi & lapisan sinkronisasi.
+ * Tidak mengubah logika turnamen: setiap klik hanya meneruskan klik ke
+ * tombol tab asli yang tetap ada di DOM.
+ * ===================================================================== */
+;(function () {
+  'use strict'
+
+  var app = document.getElementById('app')
+  if (!app) return
+
+  var ICONS = {
+    players: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 20c0-3.2 2.8-5.6 6.2-5.6s6.2 2.4 6.2 5.6"/><path d="M16.4 5.2a3.2 3.2 0 0 1 0 6.2"/><path d="M18 14.6c2.1.7 3.4 2.4 3.4 4.6"/>',
+    rules: '<path d="M4 7h16M4 12h16M4 17h10"/><circle cx="8" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="17" r="2"/>',
+    bracket: '<rect x="9" y="2.5" width="6" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="6" height="5" rx="1.4"/><rect x="15.5" y="16.5" width="6" height="5" rx="1.4"/><path d="M12 7.5v3.5M5.5 16.5V13h13v3.5"/>',
+    history: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.4V12l3.2 2"/>',
+    control: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r="1.1"/>',
+  }
+
+  var TABS = [
+    { id: 'players', label: 'Pemain & Tier', code: 'Pemain' },
+    { id: 'rules', label: 'Aturan Handicap', code: 'Aturan' },
+    { id: 'bracket', label: 'Bagan Pertandingan', code: 'Bagan' },
+    { id: 'history', label: 'Riwayat Turnamen', code: 'Riwayat' },
+    { id: 'control', label: 'Kontrol Match', code: 'Kontrol' },
+  ]
+
+  function icon(name) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[name] + '</svg>'
+  }
+
+  // ------------------------------------------------------------------ DOM
+  var nav = document.createElement('aside')
+  nav.className = 'nav'
+  nav.id = 'appNav'
+  nav.innerHTML = [
+    '<div class="nav-brand">',
+    '  <div class="nav-logo">🎱</div>',
+    '  <div>',
+    '    <div class="nav-title">Manajer Turnamen</div>',
+    '    <div class="nav-sub" id="navSub">Biliar</div>',
+    '  </div>',
+    '</div>',
+    '<div>',
+    '  <div class="nav-group-label">Menu</div>',
+    '  <div class="nav-list" id="navList">',
+    TABS.map(function (t) {
+      return (
+        '<button type="button" class="nav-item" data-target="' + t.id + '">' +
+        icon(t.id) + '<span>' + t.label + '</span></button>'
+      )
+    }).join(''),
+    '  </div>',
+    '</div>',
+    '<div class="nav-foot" id="navFoot">',
+    '  <button type="button" class="nav-new" id="navNew">Turnamen Baru</button>',
+    '</div>',
+  ].join('')
+
+  var toggle = document.createElement('button')
+  toggle.type = 'button'
+  toggle.className = 'nav-toggle'
+  toggle.setAttribute('aria-label', 'Buka menu')
+  toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>'
+
+  var backdrop = document.createElement('div')
+  backdrop.className = 'nav-backdrop'
+
+  document.body.appendChild(nav)
+  document.body.appendChild(toggle)
+  document.body.appendChild(backdrop)
+
+  // ------------------------------------------------------------- page head
+  var wrap = document.querySelector('.wrap')
+  var head = document.createElement('div')
+  head.className = 'page-head'
+  head.innerHTML =
+    '<div><div class="page-eyebrow" id="pageEyebrow">Turnamen</div>' +
+    '<h1 class="page-title" id="pageTitle">Pemain &amp; Tier</h1></div>' +
+    '<div class="page-meta" id="pageMeta"></div>'
+  if (wrap && wrap.firstChild) wrap.insertBefore(head, wrap.firstChild)
+  else if (wrap) wrap.appendChild(head)
+
+  var pageEyebrow = head.querySelector('#pageEyebrow')
+  var pageTitle = head.querySelector('#pageTitle')
+  var pageMeta = head.querySelector('#pageMeta')
+  var navSub = nav.querySelector('#navSub')
+  var navItems = Array.prototype.slice.call(nav.querySelectorAll('.nav-item'))
+
+  // ------------------------------------------------------------ sinkron UI
+  function currentTab() {
+    var active = document.querySelector('.tab.active')
+    if (active && active.dataset && active.dataset.tab) return active.dataset.tab
+    return 'players'
+  }
+
+  function state() {
+    try {
+      return typeof data === 'object' && data ? data : {}
+    } catch (error) {
+      return {}
+    }
+  }
+
+  function refresh() {
+    var tabId = currentTab()
+    var entry = null
+    for (var i = 0; i < TABS.length; i += 1) if (TABS[i].id === tabId) entry = TABS[i]
+    if (!entry) entry = TABS[0]
+
+    navItems.forEach(function (item) {
+      item.classList.toggle('is-active', item.dataset.target === entry.id)
+    })
+
+    if (pageTitle) pageTitle.textContent = entry.label
+    if (pageEyebrow) pageEyebrow.textContent = 'Turnamen Biliar'
+
+    var d = state()
+    var name = (d.tournamentName || '').trim()
+    var players = Array.isArray(d.players) ? d.players.length : 0
+    var parts = []
+    if (name) parts.push(name)
+    if (players > 0) parts.push(players + ' pemain')
+    if (d.champion) parts.push('Juara: ' + d.champion)
+    if (pageMeta) pageMeta.textContent = parts.join(' · ')
+    if (navSub) navSub.textContent = name || 'Biliar'
+  }
+
+  // Klik sidebar diteruskan ke tombol tab asli.
+  navItems.forEach(function (item) {
+    item.addEventListener('click', function () {
+      var target = item.dataset.target
+      var real = document.querySelector('.tab[data-tab="' + target + '"]')
+      if (real) {
+        real.click()
+      } else {
+        try {
+          tab = target
+          render()
+        } catch (error) {
+          console.warn('[ui] tidak bisa berpindah tab', error)
+        }
+      }
+      document.body.classList.remove('nav-open')
+      setTimeout(refresh, 0)
+    })
+  })
+
+  var navNew = nav.querySelector('#navNew')
+  if (navNew) {
+    navNew.addEventListener('click', function () {
+      var real = document.getElementById('newTournament')
+      if (real) real.click()
+      document.body.classList.remove('nav-open')
+    })
+  }
+
+  toggle.addEventListener('click', function () {
+    document.body.classList.toggle('nav-open')
+  })
+  backdrop.addEventListener('click', function () {
+    document.body.classList.remove('nav-open')
+  })
+
+  // --------------------------------------------------------- pantau render
+  var observer = new MutationObserver(function () {
+    refresh()
+  })
+  observer.observe(app, { childList: true, subtree: false })
+
+  // -------------------------------------------- pindahkan kontrol sinkron
+  var foot = nav.querySelector('#navFoot')
+  var adoptTries = 0
+  function adoptSync() {
+    var chip = document.getElementById('syncChip')
+    var status = document.getElementById('syncStatus')
+    if (!chip || !status) {
+      adoptTries += 1
+      if (adoptTries < 40) setTimeout(adoptSync, 120)
+      return
+    }
+    if (foot) {
+      if (status.parentNode !== foot) foot.appendChild(status)
+      if (chip.parentNode !== foot) foot.insertBefore(chip, status)
+    }
+  }
+  adoptSync()
+
+  // ------------------------------------------------------------ fullscreen
+  function syncFullscreen() {
+    var on = Boolean(document.fullscreenElement || document.webkitFullscreenElement)
+    document.body.classList.toggle('ui-fullscreen', on)
+  }
+  document.addEventListener('fullscreenchange', syncFullscreen)
+  document.addEventListener('webkitfullscreenchange', syncFullscreen)
+
+  refresh()
+  // Beberapa tampilan menggambar ulang setelah requestAnimationFrame pertama.
+  setTimeout(refresh, 60)
+  setTimeout(refresh, 600)
 })()
 </script>
 </body>
