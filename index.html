@@ -2125,6 +2125,7 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
     if (navSub) navSub.textContent = name || 'Biliar'
     annotateGenerate()
     ensureBracketJump()
+    instrumentBracket()
   }
 
   /**
@@ -2202,6 +2203,51 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
 
     var atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 60
     existing.classList.toggle('is-hidden', atEnd)
+  }
+
+  /**
+   * Gambar ulang garis penghubung setelah tata letak benar-benar tenang.
+   * Bagan memampat dengan animasi 0,22 detik; garis yang digambar di tengah
+   * animasi memakai koordinat lama dan tampak menggantung.
+   */
+  var redrawTimer = null
+
+  function scheduleConnectorRedraw(delay) {
+    clearTimeout(redrawTimer)
+    redrawTimer = setTimeout(function () {
+      if (typeof drawConnectors === 'function') {
+        try {
+          drawConnectors()
+        } catch (error) {
+          /* biarkan; aplikasi akan menggambar sendiri saat render berikutnya */
+        }
+      }
+    }, delay || 260)
+  }
+
+  // Pasang pemantauan sekali per elemen bagan.
+  var instrumented = null
+
+  function instrumentBracket() {
+    var scroller = document.getElementById('bracketScroller')
+    if (!scroller) {
+      instrumented = null
+      return
+    }
+    if (instrumented === scroller) return
+    instrumented = scroller
+
+    scroller.addEventListener(
+      'scroll',
+      function () {
+        scheduleConnectorRedraw(260)
+      },
+      { passive: true },
+    )
+
+    new MutationObserver(function () {
+      scheduleConnectorRedraw(300)
+    }).observe(scroller, { attributes: true, attributeFilter: ['class'] })
   }
 
   // Klik sidebar diteruskan ke tombol tab asli.
