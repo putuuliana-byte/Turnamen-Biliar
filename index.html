@@ -190,7 +190,7 @@ body {
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.01em;
-  line-height: 1.25;
+  line-height: 1.35;
   padding-top: 1px;
 }
 
@@ -345,6 +345,78 @@ body {
 .nav-foot #syncStatus.bad {
   background: rgba(185, 28, 28, 0.18) !important;
   color: #fca5a5 !important;
+}
+
+/* ------------------------------------------------- aksi cepat di sidebar */
+/* Bilah lama di atas konten disembunyikan; tombolnya dipindah ke sidebar. */
+#backupTools {
+  display: none !important;
+}
+
+.nav-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-line-soft);
+}
+
+.btn.nav-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #c3d0e2;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: left;
+  box-shadow: none;
+}
+
+.btn.nav-action svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.btn.nav-action:hover {
+  background: #101b2b;
+  border-color: #1e2c42;
+  color: #ffffff;
+}
+
+.btn.nav-action.primary {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.35);
+  color: #7ff0c6;
+}
+
+.btn.nav-action.primary:hover {
+  background: rgba(52, 211, 153, 0.22);
+  border-color: rgba(52, 211, 153, 0.55);
+  color: #b6fbe2;
+}
+
+.btn.nav-action.is-danger {
+  color: #e9a3b1;
+}
+
+.btn.nav-action.is-danger:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.28);
+  color: #ffd0d9;
 }
 
 /* ---------------------------------------------------------------- konten */
@@ -557,8 +629,52 @@ body {
   border-radius: 10px;
 }
 
-/* ------------------------------------------------------------------ mobile */
-.nav-toggle {
+/* ------------------------------------------------------------- sentuhan */
+.nav-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-list::-webkit-scrollbar-thumb {
+  background: #22304a;
+  border-radius: 999px;
+}
+
+.card {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  border-color: #26374f;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+.card h2 {
+  font-size: 18px;
+  letter-spacing: -0.015em;
+}
+
+.tier {
+  transition: border-color 0.18s ease;
+}
+
+.tier:hover {
+  border-color: #2a3c56;
+}
+
+.actions {
+  padding: 18px 20px;
+}
+
+.actions b {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+input::placeholder {
+  color: #5d7091;
+}
+
+/* ------------------------------------------------------------------ mobile */.nav-toggle {
   display: none;
   position: fixed;
   top: 14px;
@@ -1087,7 +1203,7 @@ async function importBackup(file){
 function installUtilities(){
  const header=document.querySelector('.header');if(!header)return;
  const bar=document.createElement('div');bar.id='backupTools';bar.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center';
- bar.innerHTML='<button class="btn" id="exportBackup" type="button">Ekspor Backup</button><button class="btn" id="importBackup" type="button">Impor Backup</button><input id="backupFile" type="file" accept=".json,application/json" hidden><span class="muted">v70 · Backup sebelum menutup atau mengganti file aplikasi.</span>';
+ bar.innerHTML='<button class="btn" id="exportBackup" type="button">Ekspor Backup</button><button class="btn" id="importBackup" type="button">Impor Backup</button><input id="backupFile" type="file" accept=".json,application/json" hidden>';
  header.insertAdjacentElement('afterend',bar);
  document.getElementById('exportBackup').onclick=downloadBackup;
 
@@ -1686,7 +1802,18 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
     bracket: '<rect x="9" y="2.5" width="6" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="6" height="5" rx="1.4"/><rect x="15.5" y="16.5" width="6" height="5" rx="1.4"/><path d="M12 7.5v3.5M5.5 16.5V13h13v3.5"/>',
     history: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.4V12l3.2 2"/>',
     control: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r="1.1"/>',
+    save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
+    download: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>',
+    upload: '<path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M4 4h16"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
   }
+
+  /** Aksi cepat yang dipindahkan dari bilah atas ke sidebar. */
+  var ACTIONS = [
+    { id: 'saveTournament', icon: 'save' },
+    { id: 'exportBackup', icon: 'download' },
+    { id: 'importBackup', icon: 'upload' },
+  ]
 
   var TABS = [
     { id: 'players', label: 'Pemain & Tier', code: 'Pemain' },
@@ -1824,6 +1951,40 @@ window.addEventListener('resize',scheduleDynamicBracket);document.getElementById
       if (real) real.click()
       document.body.classList.remove('nav-open')
     })
+  }
+
+  // ------------------------------- aksi cepat: pindahkan dari bilah atas
+  var bar = document.getElementById('backupTools')
+  if (bar) {
+    var versionNote = bar.querySelector('span.muted')
+    if (versionNote) versionNote.remove()
+
+    var actionsWrap = document.createElement('div')
+    actionsWrap.className = 'nav-actions'
+    actionsWrap.innerHTML = '<div class="nav-group-label">Aksi</div>'
+
+    ACTIONS.forEach(function (action) {
+      var button = document.getElementById(action.id)
+      if (!button) return
+      var label = (button.textContent || '').trim()
+      button.classList.add('nav-action')
+      button.innerHTML = icon(action.icon) + '<span>' + label + '</span>'
+      actionsWrap.appendChild(button)
+    })
+
+    var actionsFoot = nav.querySelector('#navFoot')
+    if (actionsWrap.querySelectorAll('button').length > 0) {
+      nav.insertBefore(actionsWrap, actionsFoot)
+    }
+
+    // "Turnamen Baru" ikut ke grup aksi, dengan warna peringatan.
+    var newButton = nav.querySelector('#navNew')
+    if (newButton) {
+      newButton.classList.remove('nav-new')
+      newButton.classList.add('btn', 'nav-action', 'is-danger')
+      newButton.innerHTML = icon('plus') + '<span>Turnamen Baru</span>'
+      actionsWrap.appendChild(newButton)
+    }
   }
 
   toggle.addEventListener('click', function () {
