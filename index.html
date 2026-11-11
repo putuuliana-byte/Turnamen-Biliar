@@ -1224,7 +1224,7 @@ function drawConnectors(){
  svg.style.width=`${width}px`;svg.style.height=`${height}px`;svg.innerHTML='';
  canvas.querySelectorAll('[data-node]').forEach(target=>{
   const targetCode=target.dataset.node||'';
-  [target.dataset.source1||'',target.dataset.source2||''].forEach((sourceText,sourceIndex)=>{
+  [target.dataset.source1||'',target.dataset.source2||''].forEach(sourceText=>{
    const code=sourceCode(sourceText);if(!code)return;
    if(code.startsWith('AR')&&targetCode.startsWith('BR'))return;
    const source=canvas.querySelector(`[data-node="${code}"]`);if(!source)return;
@@ -1233,14 +1233,14 @@ function drawConnectors(){
    const y1=a.top+a.height/2-box.top+canvas.scrollTop;
    const x2=b.left-box.left+canvas.scrollLeft;
    const y2=b.top+b.height/2-box.top+canvas.scrollTop;
-   const mid=x1+Math.max(14,(x2-x1)/2)+(sourceIndex===1?5:-5);
+   const mid=x1+Math.max(14,(x2-x1)/2);
    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
    const sourceIsLower=code.startsWith('BR');
    const targetIsLower=targetCode.startsWith('BR');
    const lowerRoute=sourceIsLower||targetIsLower;
    path.setAttribute('class',`connectorPath ${lowerRoute?'lowerConnector':'upperConnector'}`);
    const directUpperFinalToGrand=targetCode==='GF.1'&&code.startsWith('AR');
-   const rr=Math.min(12,Math.abs(y2-y1)/2,Math.abs(mid-x1),Math.abs(x2-mid));const dirY=y2>=y1?1:-1;path.setAttribute('d',directUpperFinalToGrand?`M ${x1} ${y1} L ${x2} ${y2}`:(Math.abs(y2-y1)<1?`M ${x1} ${y1} H ${x2}`:`M ${x1} ${y1} H ${mid-rr} Q ${mid} ${y1} ${mid} ${y1+dirY*rr} V ${y2-dirY*rr} Q ${mid} ${y2} ${mid+rr} ${y2} H ${x2}`));
+   const dy=y2-y1,dx=x2-x1;if(directUpperFinalToGrand){path.setAttribute('d',`M ${x1} ${y1} L ${x2} ${y2}`)}else if(Math.abs(dy)<10){path.setAttribute('d',`M ${x1} ${y1} H ${x2}`)}else{const rr=Math.min(8,Math.abs(dy)/2,Math.abs(dx)/3);const dir=dy>0?1:-1;path.setAttribute('d',rr<3?`M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`:`M ${x1} ${y1} H ${mid-rr} Q ${mid} ${y1} ${mid} ${y1+dir*rr} V ${y2-dir*rr} Q ${mid} ${y2} ${mid+rr} ${y2} H ${x2}`)}
    path.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(path);
    [[x1,y1],[x2,y2]].forEach(([x,y])=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('class',`connectorDot ${lowerRoute?'lowerConnectorDot':'upperConnectorDot'}`);c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','3');svg.appendChild(c)});
   });
