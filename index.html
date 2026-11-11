@@ -847,10 +847,11 @@ input::placeholder {
   pointer-events: none;
 }
 
-/* 6. Ruang kosong kecil di ujung kanan bagan supaya kartu Grand Final tidak
-      menempel persis di tepi layar saat digulir penuh. */
+/* 6. Ruang kanan cadangan: kartu Grand Final sedikit melebar melewati kotak
+      bagan, sehingga tanpa ruang ini tepinya terpotong walau sudah digulir
+      penuh. */
 .doubleCanvas {
-  padding-right: 28px !important;
+  padding-right: 72px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
