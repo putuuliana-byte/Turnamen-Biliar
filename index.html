@@ -712,6 +712,109 @@ input::placeholder {
   text-align: right;
 }
 
+/* =====================================================================
+ * Bagan pertandingan: transisi halus + garis penghubung yang mudah dibaca
+ * ===================================================================== */
+
+/* 1. Transisi saat kepadatan bagan berubah (normal <-> ringkas). */
+.match,
+.slot,
+.score,
+.finish,
+.finishPlaceholder,
+.flowColumn,
+.doubleArea,
+.nodeCard {
+  transition: padding 0.22s ease, margin 0.22s ease, gap 0.22s ease, border-radius 0.22s ease,
+    min-height 0.22s ease, height 0.22s ease, width 0.22s ease, font-size 0.16s ease,
+    transform 0.24s ease, opacity 0.2s ease !important;
+}
+
+.flowColumn {
+  transition: gap 0.22s ease, transform 0.24s ease, opacity 0.2s ease !important;
+}
+
+/* 2. Garis penghubung: kontras lebih tinggi, tebal, sudut membulat.
+      Bagan atas = garis penuh hijau-teal; bagan bawah = garis putus-putus amber,
+      supaya asal setiap pertandingan langsung terbaca. */
+.connectorPath {
+  stroke-width: 2.6 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  shape-rendering: geometricPrecision !important;
+  transition: stroke 0.2s ease, opacity 0.2s ease !important;
+}
+
+.connectorPath.upperConnector {
+  stroke: #34d399 !important;
+  opacity: 0.82 !important;
+  filter: drop-shadow(0 0 3px rgba(52, 211, 153, 0.22));
+}
+
+.connectorPath.lowerConnector {
+  stroke: #fbbf24 !important;
+  stroke-width: 2.4 !important;
+  stroke-dasharray: 7 5 !important;
+  opacity: 0.85 !important;
+  filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.22));
+}
+
+.connectorDot {
+  transition: fill 0.2s ease, opacity 0.2s ease !important;
+}
+
+.connectorDot.upperConnectorDot {
+  fill: #34d399 !important;
+  opacity: 0.95 !important;
+}
+
+.connectorDot.lowerConnectorDot {
+  fill: #fbbf24 !important;
+  opacity: 0.95 !important;
+}
+
+/* 3. Judul kolom babak lebih mudah dipindai saat menggulir. */
+.flowColumn > h3 {
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #93a7c4;
+  font-weight: 800;
+}
+
+/* 4. Saat bagan digulir (mode ringkas), tepi kiri/kanan dibuat memudar supaya
+      kartu yang terpotong tidak terlihat seperti kerusakan. */
+.bracketScroller.isCompact {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 10px),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 10px),
+    #000 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match,
+  .slot,
+  .score,
+  .finish,
+  .finishPlaceholder,
+  .flowColumn,
+  .doubleArea,
+  .nodeCard,
+  .connectorPath,
+  .connectorDot {
+    transition: none !important;
+  }
+}
+
 /* ------------------------------------------------------------------ mobile */.nav-toggle {
   display: none;
   position: fixed;
@@ -1121,7 +1224,7 @@ function drawConnectors(){
  svg.style.width=`${width}px`;svg.style.height=`${height}px`;svg.innerHTML='';
  canvas.querySelectorAll('[data-node]').forEach(target=>{
   const targetCode=target.dataset.node||'';
-  [target.dataset.source1||'',target.dataset.source2||''].forEach(sourceText=>{
+  [target.dataset.source1||'',target.dataset.source2||''].forEach((sourceText,sourceIndex)=>{
    const code=sourceCode(sourceText);if(!code)return;
    if(code.startsWith('AR')&&targetCode.startsWith('BR'))return;
    const source=canvas.querySelector(`[data-node="${code}"]`);if(!source)return;
@@ -1130,14 +1233,14 @@ function drawConnectors(){
    const y1=a.top+a.height/2-box.top+canvas.scrollTop;
    const x2=b.left-box.left+canvas.scrollLeft;
    const y2=b.top+b.height/2-box.top+canvas.scrollTop;
-   const mid=x1+Math.max(14,(x2-x1)/2);
+   const mid=x1+Math.max(14,(x2-x1)/2)+(sourceIndex===1?5:-5);
    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
    const sourceIsLower=code.startsWith('BR');
    const targetIsLower=targetCode.startsWith('BR');
    const lowerRoute=sourceIsLower||targetIsLower;
    path.setAttribute('class',`connectorPath ${lowerRoute?'lowerConnector':'upperConnector'}`);
    const directUpperFinalToGrand=targetCode==='GF.1'&&code.startsWith('AR');
-   path.setAttribute('d',directUpperFinalToGrand?`M ${x1} ${y1} L ${x2} ${y2}`:`M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`);
+   const rr=Math.min(12,Math.abs(y2-y1)/2,Math.abs(mid-x1),Math.abs(x2-mid));const dirY=y2>=y1?1:-1;path.setAttribute('d',directUpperFinalToGrand?`M ${x1} ${y1} L ${x2} ${y2}`:(Math.abs(y2-y1)<1?`M ${x1} ${y1} H ${x2}`:`M ${x1} ${y1} H ${mid-rr} Q ${mid} ${y1} ${mid} ${y1+dirY*rr} V ${y2-dirY*rr} Q ${mid} ${y2} ${mid+rr} ${y2} H ${x2}`));
    path.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(path);
    [[x1,y1],[x2,y2]].forEach(([x,y])=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('class',`connectorDot ${lowerRoute?'lowerConnectorDot':'upperConnectorDot'}`);c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','3');svg.appendChild(c)});
   });
